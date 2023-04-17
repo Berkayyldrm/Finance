@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends
 from app.services.dataframe_service import get_data_as_dataframe
+from app.technical_indicator_services.atr_services import calculate_atr, interpret_atr
 from app.technical_indicator_services.rsi_service import calculate_rsi, interpret_rsi
 from app.technical_indicator_services.stoch_service import calculate_stoch, interpret_stoch
 from app.technical_indicator_services.stochrsi_service import calculate_stoch_rsi, interpret_stoch_rsi
 from app.technical_indicator_services.macd_service import calculate_macd, interpret_macd
 from app.technical_indicator_services.adx_service import calculate_adx, interpret_adx
 from app.technical_indicator_services.williamsR_service import calculate_williams_r, interpret_williams_r
-from app.technical_indicator_services.cci_service import calculate_cci, interpret_cci
+#from app.technical_indicator_services.cci_service import calculate_cci, interpret_cci
 from app.services.data_service import get_all_data
 from app.models.data import BorsaData
 from typing import List, Dict
@@ -122,3 +123,15 @@ async def calculate_cci_value(symbol: str, date: str, period: int = 14):
     sentiment = interpret_cci(cci)
 
     return JSONResponse({"cci": cci, "sentiment": sentiment})"""
+
+@router.get("/atr/{symbol}/{date}")
+async def calculate_cci_value(symbol: str, date: str, period: int = 14):
+    # Get all data for the symbol
+    data = get_data_as_dataframe(table_name=symbol)
+
+    # Calculate CCI value
+    atr = calculate_atr(data, date, period)
+
+    sentiment = interpret_atr(atr)
+
+    return JSONResponse({"atr": atr, "sentiment": sentiment})
