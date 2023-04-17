@@ -1,8 +1,12 @@
 from fastapi import APIRouter, Depends
+from app.services.dataframe_service import get_data_as_dataframe
 from app.technical_indicator_services.rsi_service import calculate_rsi, interpret_rsi
 from app.technical_indicator_services.stoch_service import calculate_stoch, interpret_stoch
 from app.technical_indicator_services.stochrsi_service import calculate_stoch_rsi, interpret_stoch_rsi
 from app.technical_indicator_services.macd_service import calculate_macd, interpret_macd
+from app.technical_indicator_services.adx_service import calculate_adx, interpret_adx
+from app.technical_indicator_services.williamsR_service import calculate_williams_r, interpret_williams_r
+from app.technical_indicator_services.cci_service import calculate_cci, interpret_cci
 from app.services.data_service import get_all_data
 from app.models.data import BorsaData
 from typing import List, Dict
@@ -74,3 +78,47 @@ async def calculate_macd_value(symbol: str, date: str):
     sentiment = interpret_macd(macd)
 
     return JSONResponse({"macd": macd, "sentiment": sentiment})
+
+@router.get("/adx/{symbol}/{date}")
+async def calculate_adx_value(symbol: str, date: str, period: int = 14):
+    # Get all data for the symbol
+    data = get_all_data(table_name=symbol)
+
+    # Filter the data for the specified date
+    filtered_data = [d for d in data if datetime.combine(d.date, datetime.min.time()) <= datetime.fromisoformat(date)] # yyyy-mm-dd # verilen tarihten öncekiler geldi.
+
+    # Calculate the ADX value
+    adx = calculate_adx(filtered_data, date, period=period)
+
+    # Interpret the ADX value
+    sentiment = interpret_adx(adx)
+
+    return JSONResponse({"adx": adx, "sentiment": sentiment})
+
+
+@router.get("/williams_r/{symbol}/{date}")
+async def calculate_williams_r_value(symbol: str, date: str, period: int = 14):
+    # Get all data for the symbol
+    data = get_all_data(table_name=symbol)
+
+    # Filter the data for the specified date
+    filtered_data = [d for d in data if datetime.combine(d.date, datetime.min.time()) <= datetime.fromisoformat(date)] # yyyy-mm-dd # verilen tarihten öncekiler geldi.
+
+    # Calculate Williams %R value
+    wr = calculate_williams_r(filtered_data, date, period)
+
+    sentiment = interpret_williams_r(wr)
+
+    return JSONResponse({"williams_r": wr, "sentiment": sentiment})
+
+"""@router.get("/cci/{symbol}/{date}")
+async def calculate_cci_value(symbol: str, date: str, period: int = 14):
+    # Get all data for the symbol
+    data = get_data_as_dataframe(table_name=symbol)
+
+    # Calculate CCI value
+    cci = calculate_cci(data, date, period)
+
+    sentiment = interpret_cci(cci)
+
+    return JSONResponse({"cci": cci, "sentiment": sentiment})"""
