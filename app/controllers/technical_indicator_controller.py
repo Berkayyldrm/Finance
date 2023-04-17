@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from app.technical_indicator_services.rsi_service import calculate_rsi, interpret_rsi
 from app.technical_indicator_services.stoch_service import calculate_stoch, interpret_stoch
 from app.technical_indicator_services.stochrsi_service import calculate_stoch_rsi, interpret_stoch_rsi
+from app.technical_indicator_services.macd_service import calculate_macd, interpret_macd
 from app.services.data_service import get_all_data
 from app.models.data import BorsaData
 from typing import List, Dict
@@ -42,6 +43,7 @@ async def calculate_stoch_value(symbol: str,date: str, period: int = 9, slow_per
 
     return JSONResponse({"stoch": d_value, "sentiment": sentiment})
 
+
 @router.get("/stochrsi/{symbol}/{date}")
 async def calculate_stochrsi_value(symbol: str, date: str, period: int = 14, slow_period: int = 6, rsi_period: int = 14):
     # Get all data for the symbol
@@ -56,3 +58,19 @@ async def calculate_stochrsi_value(symbol: str, date: str, period: int = 14, slo
     sentiment = interpret_stoch_rsi(k_value, d_value)
 
     return JSONResponse({"stochrsi": d_value, "sentiment": sentiment})
+
+@router.get("/macd/{symbol}/{date}")
+async def calculate_macd_value(symbol: str, date: str):
+    # Get all data for the symbol
+    data = get_all_data(table_name=symbol)
+
+    # Filter the data for the specified date
+    filtered_data = [d for d in data if datetime.combine(d.date, datetime.min.time()) <= datetime.fromisoformat(date)]
+
+    # Calculate the MACD value
+    macd = calculate_macd(filtered_data, date)
+
+    # Interpret the MACD value
+    sentiment = interpret_macd(macd)
+
+    return JSONResponse({"macd": macd, "sentiment": sentiment})
