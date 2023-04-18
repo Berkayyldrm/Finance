@@ -1,11 +1,15 @@
 from fastapi import APIRouter, Depends
 from app.services.dataframe_service import get_data_as_dataframe
 from app.technical_indicator_services.atr_services import calculate_atr, interpret_atr
+from app.technical_indicator_services.bullBearPower_service import calculate_bull_bear_power, interpret_bull_bear_power
+from app.technical_indicator_services.highsLows_service import calculate_hl, interpret_hl
+from app.technical_indicator_services.roc import calculate_roc, interpret_roc
 from app.technical_indicator_services.rsi_service import calculate_rsi, interpret_rsi
 from app.technical_indicator_services.stoch_service import calculate_stoch, interpret_stoch
 from app.technical_indicator_services.stochrsi_service import calculate_stoch_rsi, interpret_stoch_rsi
 from app.technical_indicator_services.macd_service import calculate_macd, interpret_macd
 from app.technical_indicator_services.adx_service import calculate_adx, interpret_adx
+from app.technical_indicator_services.ultimate_oscillator_service import calculate_ultimate_oscillator, interpret_ultimate_oscillator
 from app.technical_indicator_services.williamsR_service import calculate_williams_r, interpret_williams_r
 #from app.technical_indicator_services.cci_service import calculate_cci, interpret_cci
 from app.services.data_service import get_all_data
@@ -135,3 +139,55 @@ async def calculate_cci_value(symbol: str, date: str, period: int = 14):
     sentiment = interpret_atr(atr)
 
     return JSONResponse({"atr": atr, "sentiment": sentiment})
+
+@router.get("/hl/{symbol}/{date}")
+async def calculate_hl_value(symbol: str, date: str, period: int = 14):
+    # Get all data for the symbol
+    data = get_data_as_dataframe(table_name=symbol)
+
+    # Calculate High/Low value
+    high, low = calculate_hl(data, date, period)
+
+    sentiment = interpret_hl(high, low)
+
+    return JSONResponse({"h": high, "l": low, "sentiment": sentiment})
+
+@router.get("/ultimate_oscillator/{symbol}/{date}")
+async def calculate_ultimate_oscillator_value(symbol: str, date: str, short_period: int = 7, medium_period: int = 14, long_period: int = 28):
+    # Get all data for the symbol
+    data = get_data_as_dataframe(table_name=symbol)
+
+    # Filter data to only include dates before the specified date
+    end_date = datetime.strptime(date, "%Y-%m-%d").date()
+    filtered_data = data.loc[data["date"] <= end_date]
+
+    # Calculate the ultimate oscillator
+    oscillator = calculate_ultimate_oscillator(filtered_data, short_period, medium_period, long_period)
+
+    # Interpret the oscillator value
+    sentiment = interpret_ultimate_oscillator(oscillator)
+
+    return JSONResponse({"oscillator": oscillator, "sentiment": sentiment})
+
+@router.get("/roc/{symbol}/{date}")
+async def calculate_roc_value(symbol: str, date: str, period: int = 14):
+    # Get all data for the symbol
+    data = get_data_as_dataframe(table_name=symbol)
+
+    # Calculate ROC value
+    roc = calculate_roc(data, date, period)
+
+    sentiment = interpret_roc(roc)
+
+    return JSONResponse({"roc": roc, "sentiment": sentiment})
+
+@router.get("/bull-bear-power/{symbol}/{date}")
+async def calculate_bull_bear_power_value(symbol: str, date: str, period: int = 13):
+    # Get all data for the symbol
+    data = get_data_as_dataframe(table_name=symbol)
+    # Calculate Bull/Bear Power value
+    bull_power, bear_power = calculate_bull_bear_power(data, date, period)
+
+    sentiment = interpret_bull_bear_power(bull_power, bear_power)
+
+    return JSONResponse({"bull_power": bull_power, "bear_power": bear_power, "sentiment": sentiment})
