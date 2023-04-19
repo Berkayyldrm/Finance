@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 
 router = APIRouter()
 
-@router.get("/classic/{symbol}/{date}/{period}")#?????????????
+@router.get("/classic/{symbol}/{date}/{period}")
 async def calculate_moving_average_value(symbol: str, date: str, period: int):
 
     data = get_data_as_dataframe(table_name=symbol)
@@ -26,13 +26,11 @@ async def calculate_moving_average_value(symbol: str, date: str, period: int):
 async def calculate_fibonacci_pivot_points_value(symbol: str, date: str, period: int):
     data = get_data_as_dataframe(table_name=symbol)
 
-    fibonacci_pivot_points = calculate_fibonacci_pivot_points(data, date, period)
+    support_levels, resistance_levels, current_price = calculate_fibonacci_pivot_points(data, date, period)
 
-    current_price = fibonacci_pivot_points[-1]
-  
-    sentiment = interpret_fibonacci_pivot_points(fibonacci_pivot_points, current_price)
+    sentiment = interpret_fibonacci_pivot_points(support_levels, resistance_levels, current_price)
 
-    return {"fibonacci_pivot_points": fibonacci_pivot_points, "sentiment": sentiment}
+    return JSONResponse({"support_levels": support_levels, "resistance_levels": resistance_levels, "sentiment": sentiment})
 
 @router.get("/camarilla/{symbol}/{date}/{period}")
 async def calculate_camarilla_pivot_points_value(symbol: str, date: str, period: int):

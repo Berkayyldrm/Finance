@@ -5,23 +5,24 @@ from typing import List
 
 def calculate_classic_pivot_points(data: pd.DataFrame, date: str, period: int) -> List[float]:
     end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date].tail(period+1)
-
+    filtered_data = data.loc[data['date'] <= end_date].head(period+1)
+    print(filtered_data)
     high, low, close = filtered_data['high'], filtered_data['low'], filtered_data['close']
-    pivot = (high + low + close) / 3
-    resistance_1 = (2 * pivot) - low
-    support_1 = (2 * pivot) - high
-    resistance_2 = pivot + (high - low)
-    support_2 = pivot - (high - low)
-    resistance_3 = high + 2 * (pivot - low)
-    support_3 = low - 2 * (high - pivot)
+    pivot = round((high + low + close) / 3, 3)
+    r1 = round((2 * pivot) - low, 3)
+    s1 = round((2 * pivot) - high, 3)
+    r2 = round(pivot + (high - low), 3)
+    s2 = round(pivot - (high - low), 3)
+    r3 = round(high + 2 * (pivot - low), 3)
+    s3 = round(low - 2 * (high - pivot), 3)
 
-    current_price = filtered_data.iloc[-1]['close']
-    
-    return [pivot.iloc[-1], resistance_1.iloc[-1], resistance_2.iloc[-1], resistance_3.iloc[-1], support_1.iloc[-1], support_2.iloc[-1], support_3.iloc[-1], current_price]
+    current_price = filtered_data.iloc[0]['close']
+
+    return [pivot, r1, r2, r3, s1, s2, s3, current_price]
 
 
 def interpret_classic_pivot_points(classic_pivot_points: List[float], current_price: float) -> str:
+
     if current_price > classic_pivot_points[3]:
         return "Strong Bullish"
     elif current_price > classic_pivot_points[2] and current_price <= classic_pivot_points[3]:

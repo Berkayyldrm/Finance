@@ -1,36 +1,39 @@
 from datetime import datetime
 import pandas as pd
-from typing import List
+from typing import List, Tuple
 
 
-def calculate_fibonacci_pivot_points(data: pd.DataFrame, date: str, period: int) -> List[float]:
+def calculate_fibonacci_pivot_points(data: pd.DataFrame, date: str, period: int) -> Tuple[List[float], List[float], float]:
     
     end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date].head(period+1)
+    filtered_data = data.loc[data['date'] <= end_date].head(period)
+    high, low = filtered_data['high'].max(), filtered_data['low'].min()
+    print(filtered_data)
+    range_diff = high - low
+    ratios = [0.236, 0.382, 0.5, 0.618, 0.786]
+    support_levels = []
+    resistance_levels = []
+    for ratio in ratios:
+        retracement = range_diff * ratio
+        support = low + retracement
+        resistance = high - retracement
 
-    high, low, close = filtered_data['high'], filtered_data['low'], filtered_data['close']
-    pivot = (high.iloc[0] + low.iloc[0] + close.iloc[0]) / 3
-    r1 = pivot + (high.iloc[0] - low.iloc[0]) * 0.382
-    r2 = pivot + (high.iloc[0] - low.iloc[0]) * 0.618
-    r3 = pivot + (high.iloc[0] - low.iloc[0]) * 1
-    s1 = pivot - (high.iloc[0] - low.iloc[0]) * 0.382
-    s2 = pivot - (high.iloc[0] - low.iloc[0]) * 0.618
-    s3 = pivot - (high.iloc[0] - low.iloc[0]) * 1
+        support_levels.append(support)
+        resistance_levels.append(resistance)
 
     current_price = filtered_data.iloc[0]['close']
     
-    return [pivot, r1, r2, r3, s1, s2, s3, current_price]
+    return support_levels, resistance_levels, current_price
 
-def interpret_fibonacci_pivot_points(fibonacci_pivot_points: List[float], current_price: float) -> str:
-    if current_price > fibonacci_pivot_points[3]:
-        return "Strong Bullish"
-    elif current_price > fibonacci_pivot_points[2] and current_price <= fibonacci_pivot_points[3]:
-        return "Bullish"
-    elif current_price > fibonacci_pivot_points[1] and current_price <= fibonacci_pivot_points[2]:
-        return "Neutral to Bullish"
-    elif current_price > fibonacci_pivot_points[0] and current_price <= fibonacci_pivot_points[1]:
-        return "Neutral"
-    elif current_price > fibonacci_pivot_points[4] and current_price <= fibonacci_pivot_points[0]:
-        return "Neutral to Bearish"
+def interpret_fibonacci_pivot_points(support_levels: List[float], resistance_levels: List[float], current_price: float) -> str:
+    if current_price < support_levels[0]:
+        return "Kapanış değeri en düşük destek seviyesinin altında, düşüş eğilimi bekleniyor."
+    elif current_price > resistance_levels[-1]:
+        return "Kapanış değeri en yüksek direnç seviyesinin üzerinde, yükseliş eğilimi bekleniyor."
     else:
-        return "Bearish"
+        for i in range(len(support_levels) - 1):
+            if support_levels[i] <= current_price <= support_levels[i + 1]:
+                return f"Kapanış değeri Destek {i + 1} ve Destek {i + 2} arasında, yatay hareket bekleniyor."
+        for i in range(len(resistance_levels) - 1):
+            if resistance_levels[i] <= current_price <= resistance_levels[i + 1]:
+                return f"Kapanış değeri Direnç {i + 1} ve Direnç {i + 2} arasında, yatay hareket bekleniyor."

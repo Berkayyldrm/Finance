@@ -5,7 +5,7 @@ from typing import List
 def calculate_demark_pivot_points(data: pd.DataFrame, date: str, period: int) -> List[float]:
     
     end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date].tail(period+1)
+    filtered_data = data.loc[data['date'] <= end_date].head(period+1)
 
     high, low, close = filtered_data['high'], filtered_data['low'], filtered_data['close']
 
