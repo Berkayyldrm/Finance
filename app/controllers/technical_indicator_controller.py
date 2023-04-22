@@ -24,13 +24,10 @@ router = APIRouter()
 @router.get("/rsi/{symbol}/{date}")
 async def calculate_rsi_value(symbol: str, date: str):
     # Get all data for the symbol
-    data = get_all_data(table_name=symbol)
+    data = get_data_as_dataframe(table_name=symbol)
 
-    # Filter the data for the specified date
-    filtered_data = [d for d in data if datetime.combine(d.date, datetime.min.time()) <= datetime.fromisoformat(date)] # yyyy-mm-dd # verilen tarihten öncekiler geldi.
-    print(filtered_data)
     # Calculate the RSI value
-    rsi = calculate_rsi(filtered_data, date, period=14)
+    rsi = calculate_rsi(data, date, period=14)
 
     # Interpret the RSI value
     sentiment = interpret_rsi(rsi)
@@ -39,34 +36,29 @@ async def calculate_rsi_value(symbol: str, date: str):
 
 
 @router.get("/stoch/{symbol}/{date}")
-async def calculate_stoch_value(symbol: str,date: str, period: int = 9, slow_period: int = 6):
+async def calculate_stoch_value(symbol: str,date: str, k: int = 9, d: int = 6, smooth_k: int = 3):
     # Get all data for the symbol
-    data = get_all_data(table_name=symbol)
-
-    filtered_data = [d for d in data if datetime.combine(d.date, datetime.min.time()) <= datetime.fromisoformat(date)] # yyyy-mm-dd # verilen tarihten öncekiler geldi.
+    data = get_data_as_dataframe(table_name=symbol)
 
     # Calculate the STOCH value
-    k_value, d_value = calculate_stoch(filtered_data, date, period=period, slow_period=slow_period)
+    stoch = calculate_stoch(data, date, k=k, d=d, smooth_k=smooth_k)
 
-    sentiment = interpret_stoch(k_value, d_value)
+    sentiment = interpret_stoch(stoch[2])
 
-    return JSONResponse({"stoch": d_value, "sentiment": sentiment})
+    return JSONResponse({"stoch": {"stoch_k": stoch[0], "stoch_d": stoch[1], "stoch_diff": stoch[2]}, "sentiment": sentiment})
 
 
 @router.get("/stochrsi/{symbol}/{date}")
-async def calculate_stochrsi_value(symbol: str, date: str, period: int = 14, slow_period: int = 6, rsi_period: int = 14):
+async def calculate_stochrsi_value(symbol: str, date: str, period: int = 14, rsi_period: int = 14, k: int = 3, d: int = 3):
     # Get all data for the symbol
-    data = get_all_data(table_name=symbol)
-
-    # Filter the data for the specified date
-    filtered_data = [d for d in data if datetime.combine(d.date, datetime.min.time()) <= datetime.fromisoformat(date)]
+    data = get_data_as_dataframe(table_name=symbol)
 
     # Calculate the STOCHRSI value
-    k_value, d_value = calculate_stoch_rsi(filtered_data, date, period=period, slow_period=slow_period, rsi_period=rsi_period)
+    stochrsi = calculate_stoch_rsi(data, date, period=period, rsi_period=rsi_period, k=k, d=d)
     # Interpret the STOCHRSI value
-    sentiment = interpret_stoch_rsi(k_value, d_value)
+    sentiment = interpret_stoch_rsi(stochrsi[0], stochrsi[1])
 
-    return JSONResponse({"stochrsi": d_value, "sentiment": sentiment})
+    return JSONResponse({"stochrsi": stochrsi, "sentiment": sentiment})
 
 @router.get("/macd/{symbol}/{date}")
 async def calculate_macd_value(symbol: str, date: str):

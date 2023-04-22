@@ -1,37 +1,27 @@
-from typing import List
-from app.models.data import BorsaData
-from datetime import datetime, timedelta
-from app.services.data_service import get_all_data
-from datetime import date
+from datetime import datetime
+import pandas as pd
+import pandas_ta as ta
 
-def calculate_stoch(filtered_data: List[BorsaData], date: date, period: int = 14, slow_period: int = 6) -> float:
+def calculate_stoch(data: pd.DataFrame, date: str, k: int = 9, d: int = 6, smooth_k: int = 3) -> tuple:
     # Calculate the highest high and lowest low for the past period days
 
-    date = datetime.strptime(date, "%Y-%m-%d").date()
+    end_date = datetime.strptime(date, "%Y-%m-%d").date()
+    filtered_data = data.loc[data['date'] <= end_date]
+    stoch = ta.stoch(filtered_data["high"], filtered_data["low"], filtered_data["close"], k=k, d=d, smooth_k=smooth_k)
+    stoch_k = stoch['STOCHk_{}_{}_{}'.format(k, d, smooth_k)].iloc[-1]
+    stoch_d = stoch['STOCHd_{}_{}_{}'.format(k, d, smooth_k)].iloc[-1]
+    stoch_diff = stoch_k - stoch_d
+    return stoch_k, stoch_d, stoch_diff
 
-    # Filter the prices for the specified period
-    start_date = date - timedelta(days=period)
-    end_date = date - timedelta(days=1)
 
-    filtered_data = [price for price in filtered_data if start_date <= price.date <= end_date]
-
-    highs = [d.high for d in filtered_data[-period:]]
-    highest_high = max(highs)
-    lows = [d.low for d in filtered_data[-period:]]
-    lowest_low = min(lows)
-
-    # Calculate the %K value
-    current_price = filtered_data[-1].close
-    k_value = ((current_price - lowest_low) / (highest_high - lowest_low)) * 100
-
-    # Calculate the %D value (slow %K)
-    prev_k_values = [((d.close - min(lows[-slow_period:])) / (max(highs[-slow_period:]) - min(lows[-slow_period:]))) * 100 for d in filtered_data[-slow_period - period:-slow_period]]
-    d_value = sum(prev_k_values) / len(prev_k_values)
-
-    return k_value, d_value # d_value - > sma_d_value
-
-def interpret_stoch(k_value: float, d_value: float) -> str:
-    if k_value > d_value:
+def interpret_stoch(stoch_diff: float) -> str:
+    if stoch_diff > 20:
         return "Overbought"
-    else:
+    elif stoch_diff < -20:
         return "Oversold"
+    elif stoch_diff > 0:
+        return "Buy"
+    elif stoch_diff < 0:
+        return "Sell"
+    else:
+        return "Neutral"
