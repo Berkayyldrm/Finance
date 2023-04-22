@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from app.services.dataframe_service import get_data_as_dataframe
 from app.technical_indicator_services.atr_services import calculate_atr, interpret_atr
 from app.technical_indicator_services.bullBearPower_service import calculate_bull_bear_power, interpret_bull_bear_power
+from app.technical_indicator_services.cci_service import calculate_cci, interpret_cci
 from app.technical_indicator_services.highsLows_service import calculate_hl, interpret_hl
 from app.technical_indicator_services.roc_service import calculate_roc, interpret_roc
 from app.technical_indicator_services.rsi_service import calculate_rsi, interpret_rsi
@@ -11,7 +12,6 @@ from app.technical_indicator_services.macd_service import calculate_macd, interp
 from app.technical_indicator_services.adx_service import calculate_adx, interpret_adx
 from app.technical_indicator_services.ultimate_oscillator_service import calculate_ultimate_oscillator, interpret_ultimate_oscillator
 from app.technical_indicator_services.williamsR_service import calculate_williams_r, interpret_williams_r
-#from app.technical_indicator_services.cci_service import calculate_cci, interpret_cci
 from app.services.data_service import get_all_data
 from app.models.data import BorsaData
 from typing import List, Dict
@@ -116,7 +116,7 @@ async def calculate_williams_r_value(symbol: str, date: str, period: int = 14):
 
     return JSONResponse({"williams_r": wr, "sentiment": sentiment})
 
-"""@router.get("/cci/{symbol}/{date}")
+@router.get("/cci/{symbol}/{date}")
 async def calculate_cci_value(symbol: str, date: str, period: int = 14):
     # Get all data for the symbol
     data = get_data_as_dataframe(table_name=symbol)
@@ -126,7 +126,7 @@ async def calculate_cci_value(symbol: str, date: str, period: int = 14):
 
     sentiment = interpret_cci(cci)
 
-    return JSONResponse({"cci": cci, "sentiment": sentiment})"""
+    return JSONResponse({"cci": cci, "sentiment": sentiment})
 
 @router.get("/atr/{symbol}/{date}")
 async def calculate_cci_value(symbol: str, date: str, period: int = 14):
