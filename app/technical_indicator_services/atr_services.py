@@ -16,13 +16,13 @@ def calculate_atr(data: pd.DataFrame, date: str, period: int = 14) -> float:
 
     current_price = filtered_data.loc[filtered_data["date"] == end_date, "close"].values[0]
 
-    return atr, current_price
+    percentage_atr = (atr / current_price) * 100
+
+    return atr, percentage_atr
     
 
-def interpret_atr(atr_value: float, current_price: float) -> str:
+def interpret_atr(percentage_atr: float) -> str:
     
-    percentage_atr = (atr_value / current_price) * 100
- 
     if percentage_atr > 5:
         return "Çok Yüksek Oynaklık"
     elif 3 < percentage_atr <= 5:

@@ -134,11 +134,11 @@ async def calculate_cci_value(symbol: str, date: str, period: int = 14):
     data = get_data_as_dataframe(table_name=symbol)
 
     # Calculate CCI value
-    atr, current_price = calculate_atr(data, date, period)
+    atr, percentage_atr = calculate_atr(data, date, period)
 
-    sentiment = interpret_atr(atr, current_price)
+    sentiment = interpret_atr(percentage_atr)
 
-    return JSONResponse({"atr": atr, "sentiment": sentiment})
+    return JSONResponse({"atr": atr, "percentage_atr": percentage_atr, "sentiment": sentiment})
 
 @router.get("/hl/{symbol}/{date}")
 async def calculate_hl_value(symbol: str, date: str, period: int = 14):
