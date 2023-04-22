@@ -134,9 +134,9 @@ async def calculate_cci_value(symbol: str, date: str, period: int = 14):
     data = get_data_as_dataframe(table_name=symbol)
 
     # Calculate CCI value
-    atr = calculate_atr(data, date, period)
+    atr, current_price = calculate_atr(data, date, period)
 
-    sentiment = interpret_atr(atr)
+    sentiment = interpret_atr(atr, current_price)
 
     return JSONResponse({"atr": atr, "sentiment": sentiment})
 
