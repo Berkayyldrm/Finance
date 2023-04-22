@@ -155,14 +155,10 @@ async def calculate_hl_value(symbol: str, date: str, period: int = 14):
 @router.get("/ultimate_oscillator/{symbol}/{date}")
 async def calculate_ultimate_oscillator_value(symbol: str, date: str, short_period: int = 7, medium_period: int = 14, long_period: int = 28):
     # Get all data for the symbol
-    data = get_data_as_dataframe(table_name=symbol)
-
-    # Filter data to only include dates before the specified date
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data["date"] <= end_date]
+    data = get_data_as_dataframe(table_name=symbol) 
 
     # Calculate the ultimate oscillator
-    oscillator = calculate_ultimate_oscillator(filtered_data, short_period, medium_period, long_period)
+    oscillator = calculate_ultimate_oscillator(data, date, short_period, medium_period, long_period)
 
     # Interpret the oscillator value
     sentiment = interpret_ultimate_oscillator(oscillator)
