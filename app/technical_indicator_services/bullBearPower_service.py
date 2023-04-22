@@ -14,12 +14,12 @@ def calculate_bull_bear_power(data: pd.DataFrame, date: str, period: int) -> flo
 
 def interpret_bull_bear_power(bull_power: float, bear_power: float) -> str:
     if bull_power > 0 and bear_power < 0:
-        return "Bullish"
+        return "Güçlü Al"
     elif bull_power < 0 and bear_power > 0:
-        return "Bearish"
+        return "Güçlü Sat"
     elif bull_power > 0 and bear_power > 0:
-        return "Neutral to Bullish"
+        return "Al"
     elif bull_power < 0 and bear_power < 0:
-        return "Neutral to Bearish"
+        return "Sat"
     else:
-        return "Neutral"
+        return "Nötr"

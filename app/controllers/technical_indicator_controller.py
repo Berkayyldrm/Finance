@@ -28,7 +28,7 @@ async def calculate_rsi_value(symbol: str, date: str):
 
     # Filter the data for the specified date
     filtered_data = [d for d in data if datetime.combine(d.date, datetime.min.time()) <= datetime.fromisoformat(date)] # yyyy-mm-dd # verilen tarihten öncekiler geldi.
-
+    print(filtered_data)
     # Calculate the RSI value
     rsi = calculate_rsi(filtered_data, date, period=14)
 
@@ -169,8 +169,8 @@ async def calculate_ultimate_oscillator_value(symbol: str, date: str, short_peri
 
     return JSONResponse({"oscillator": oscillator, "sentiment": sentiment})
 
-@router.get("/roc/{symbol}/{date}")
-async def calculate_roc_value(symbol: str, date: str, period: int = 14):
+@router.get("/roc/{symbol}/{date}/{period}")
+async def calculate_roc_value(symbol: str, date: str, period: int = 12):
     # Get all data for the symbol
     data = get_data_as_dataframe(table_name=symbol)
 
@@ -181,7 +181,7 @@ async def calculate_roc_value(symbol: str, date: str, period: int = 14):
 
     return JSONResponse({"roc": roc, "sentiment": sentiment})
 
-@router.get("/bull-bear-power/{symbol}/{date}")
+@router.get("/bull-bear-power/{symbol}/{date}") # X
 async def calculate_bull_bear_power_value(symbol: str, date: str, period: int = 13):
     # Get all data for the symbol
     data = get_data_as_dataframe(table_name=symbol)
