@@ -3,7 +3,7 @@ from app.services.dataframe_service import get_data_as_dataframe
 from app.technical_indicator_services.atr_services import calculate_atr, interpret_atr
 from app.technical_indicator_services.bullBearPower_service import calculate_bull_bear_power, interpret_bull_bear_power
 from app.technical_indicator_services.highsLows_service import calculate_hl, interpret_hl
-from app.technical_indicator_services.roc import calculate_roc, interpret_roc
+from app.technical_indicator_services.roc_service import calculate_roc, interpret_roc
 from app.technical_indicator_services.rsi_service import calculate_rsi, interpret_rsi
 from app.technical_indicator_services.stoch_service import calculate_stoch, interpret_stoch
 from app.technical_indicator_services.stochrsi_service import calculate_stoch_rsi, interpret_stoch_rsi
