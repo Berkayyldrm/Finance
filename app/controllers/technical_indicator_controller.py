@@ -104,13 +104,10 @@ async def calculate_adx_value(symbol: str, date: str, period: int = 14):
 @router.get("/williams_r/{symbol}/{date}")
 async def calculate_williams_r_value(symbol: str, date: str, period: int = 14):
     # Get all data for the symbol
-    data = get_all_data(table_name=symbol)
-
-    # Filter the data for the specified date
-    filtered_data = [d for d in data if datetime.combine(d.date, datetime.min.time()) <= datetime.fromisoformat(date)] # yyyy-mm-dd # verilen tarihten öncekiler geldi.
+    data = get_data_as_dataframe(table_name=symbol)
 
     # Calculate Williams %R value
-    wr = calculate_williams_r(filtered_data, date, period)
+    wr = calculate_williams_r(data, date, period)
 
     sentiment = interpret_williams_r(wr)
 
