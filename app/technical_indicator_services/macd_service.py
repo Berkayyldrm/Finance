@@ -1,84 +1,39 @@
-from typing import List
-from app.models.data import BorsaData
-from datetime import datetime, timedelta
-from app.services.data_service import get_all_data
-from datetime import date
+from datetime import datetime
+import pandas as pd
+import pandas_ta as ta
 
-def calculate_macd(filtered_data: List[BorsaData], date: date, short_period: int = 12, long_period: int = 26, signal_period: int = 9) -> float:
-    """
-    Calculates the Moving Average Convergence/Divergence (MACD) value of a given list of prices over a specified period.
+def calculate_macd(data: pd.DataFrame, date: str, fast_period: int = 12, slow_period: int = 26, signal_period: int = 9) -> tuple:
 
-    Args:
-        prices (List[float]): A list of prices.
-        date (date): The date to calculate MACD for.
-        short_period (int): The number of periods to use for the short-term moving average. Defaults to 12.
-        long_period (int): The number of periods to use for the long-term moving average. Defaults to 26.
-        signal_period (int): The number of periods to use for the signal line. Defaults to 9.
-
-    Returns:
-        float: The MACD value.
-    """
-    date = datetime.strptime(date, "%Y-%m-%d").date()
-
-    # Filter the prices for the specified period
-    start_date = date - timedelta(days=long_period + signal_period)
-    end_date = date - timedelta(days=1)
-
-    filtered_prices = [price for price in filtered_data if start_date <= price.date <= end_date]
-
-    # Calculate the short-term and long-term moving averages
-    short_term_ema = calculate_ema(filtered_prices, short_period)
-    long_term_ema = calculate_ema(filtered_prices, long_period)
+    end_date = datetime.strptime(date, "%Y-%m-%d").date()
+    filtered_data = data.loc[data['date'] <= end_date]
 
     # Calculate the MACD value
-    macd = short_term_ema - long_term_ema
+    macd = ta.macd(filtered_data["close"], fast=fast_period, slow=slow_period, signal=signal_period)
 
-    # Calculate the signal line
-    signal_line = calculate_ema(filtered_prices[-signal_period:], signal_period, start=macd)
-
-    return macd - signal_line
+    return macd['MACD_12_26_9'].iloc[-1], macd['MACDs_12_26_9'].iloc[-1], macd['MACDh_12_26_9'].iloc[-1]
 
 
-def calculate_ema(prices: List[BorsaData], period: int, start: float = None) -> float:
+def interpret_macd(macd: float, signal: float, histogram: float) -> str:
     """
-    Calculates the exponential moving average (EMA) of a given list of prices over a specified period.
-
-    Args:
-        prices (List[float]): A list of prices.
-        period (int): The number of periods to use for the calculation.
-        start (float): The starting value for the EMA calculation. Defaults to None.
-
-    Returns:
-        float: The EMA value.
-    """
-    if len(prices) == 0:
-        return 0
-    
-    # Calculate the multiplier
-    multiplier = 2 / (period + 1)
-    
-    # Initialize the EMA with the first price
-    ema = prices[0].close
-    
-    # Calculate the EMA for the rest of the prices
-    for i in range(1, len(prices)):
-        close_price = prices[i].close
-        ema = (close_price - ema) * multiplier + ema
-    
-    return ema
-
-
-def interpret_macd(macd: float) -> str:
-    """
-    Interprets the given MACD value and returns a message indicating the market sentiment.
+    Interprets the given MACD, signal line, and histogram values and returns a message indicating the market sentiment.
 
     Args:
         macd (float): The MACD value.
+        signal (float): The signal line value.
+        histogram (float): The MACD histogram value.
 
     Returns:
         str: A message indicating the market sentiment.
     """
-    if macd > 0:
-        return "Bullish"
+    if histogram > 0:
+        if macd > signal:
+            return "Strong Buy"
+        else:
+            return "Buy"
+    elif histogram < 0:
+        if macd < signal:
+            return "Strong Sell"
+        else:
+            return "Sell"
     else:
-        return "Bearish"
+        return "Neutral"

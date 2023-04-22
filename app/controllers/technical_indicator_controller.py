@@ -71,18 +71,14 @@ async def calculate_stochrsi_value(symbol: str, date: str, period: int = 14, slo
 @router.get("/macd/{symbol}/{date}")
 async def calculate_macd_value(symbol: str, date: str):
     # Get all data for the symbol
-    data = get_all_data(table_name=symbol)
-
-    # Filter the data for the specified date
-    filtered_data = [d for d in data if datetime.combine(d.date, datetime.min.time()) <= datetime.fromisoformat(date)]
+    data = get_data_as_dataframe(table_name=symbol)
 
     # Calculate the MACD value
-    macd = calculate_macd(filtered_data, date)
-
+    macd = calculate_macd(data, date)
     # Interpret the MACD value
-    sentiment = interpret_macd(macd)
+    sentiment = interpret_macd(macd[0], macd[1], macd[2])
 
-    return JSONResponse({"macd": macd, "sentiment": sentiment})
+    return JSONResponse({"macd": {"macd": macd[0], "macds":macd[1], "macdh":macd[2]}, "sentiment": sentiment})
 
 @router.get("/adx/{symbol}/{date}")
 async def calculate_adx_value(symbol: str, date: str, period: int = 14):
