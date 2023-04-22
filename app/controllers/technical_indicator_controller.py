@@ -87,18 +87,20 @@ async def calculate_macd_value(symbol: str, date: str):
 @router.get("/adx/{symbol}/{date}")
 async def calculate_adx_value(symbol: str, date: str, period: int = 14):
     # Get all data for the symbol
-    data = get_all_data(table_name=symbol)
-
-    # Filter the data for the specified date
-    filtered_data = [d for d in data if datetime.combine(d.date, datetime.min.time()) <= datetime.fromisoformat(date)] # yyyy-mm-dd # verilen tarihten öncekiler geldi.
+    data = get_data_as_dataframe(table_name=symbol)
 
     # Calculate the ADX value
-    adx = calculate_adx(filtered_data, date, period=period)
+    adx, dmp, dmn = calculate_adx(data, date, period)
 
     # Interpret the ADX value
-    sentiment = interpret_adx(adx)
+    sentiment = interpret_adx(adx, dmp, dmn)
 
-    return JSONResponse({"adx": adx, "sentiment": sentiment})
+    if dmp > dmn:
+        adx_return = adx * 1
+    else:
+        adx_return = adx * -1
+
+    return JSONResponse({"adx": adx, "adx_return": adx_return, "sentiment": sentiment})
 
 
 @router.get("/williams_r/{symbol}/{date}")
