@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
 from app.services.dataframe_service import get_data_as_dataframe
-from app.technical_indicator_services.atr_services import calculate_atr, interpret_atr
-from app.technical_indicator_services.bullBearPower_service import calculate_bull_bear_power, interpret_bull_bear_power
+from app.technical_indicator_services.atr_service import calculate_atr, interpret_atr
+from app.technical_indicator_services.bull_bear_power_service import calculate_bull_bear_power, interpret_bull_bear_power
 from app.technical_indicator_services.cci_service import calculate_cci, interpret_cci
-from app.technical_indicator_services.highsLows_service import calculate_hl, interpret_hl
+from app.technical_indicator_services.highs_lows_service import calculate_hl, interpret_hl
 from app.technical_indicator_services.roc_service import calculate_roc, interpret_roc
 from app.technical_indicator_services.rsi_service import calculate_rsi, interpret_rsi
 from app.technical_indicator_services.stoch_service import calculate_stoch, interpret_stoch
@@ -11,7 +11,7 @@ from app.technical_indicator_services.stochrsi_service import calculate_stoch_rs
 from app.technical_indicator_services.macd_service import calculate_macd, interpret_macd
 from app.technical_indicator_services.adx_service import calculate_adx, interpret_adx
 from app.technical_indicator_services.ultimate_oscillator_service import calculate_ultimate_oscillator, interpret_ultimate_oscillator
-from app.technical_indicator_services.williamsR_service import calculate_williams_r, interpret_williams_r
+from app.technical_indicator_services.williams_r_service import calculate_williams_r, interpret_williams_r
 from app.services.data_service import get_all_data
 from app.models.data import BorsaData
 from typing import List, Dict
@@ -127,7 +127,7 @@ async def calculate_cci_value(symbol: str, date: str, period: int = 14):
 
     return JSONResponse({"atr": atr, "percentage_atr": percentage_atr, "sentiment": sentiment})
 
-@router.get("/hl/{symbol}/{date}")
+@router.get("/high_lows/{symbol}/{date}")
 async def calculate_hl_value(symbol: str, date: str, period: int = 14):
     # Get all data for the symbol
     data = get_data_as_dataframe(table_name=symbol)
@@ -164,7 +164,7 @@ async def calculate_roc_value(symbol: str, date: str, period: int = 12):
 
     return JSONResponse({"roc": roc, "sentiment": sentiment})
 
-@router.get("/bull-bear-power/{symbol}/{date}") # X
+@router.get("/bull_bear_power/{symbol}/{date}") # X
 async def calculate_bull_bear_power_value(symbol: str, date: str, period: int = 13):
     # Get all data for the symbol
     data = get_data_as_dataframe(table_name=symbol)
