@@ -3,6 +3,8 @@ from app.models.data import BorsaData
 from app.services.parse_service import parse_data
 import configparser
 from pandas import DataFrame
+import os
+import glob
 
 # Config dosyasını oku
 config = configparser.ConfigParser()
@@ -64,3 +66,16 @@ def create_data(input_data: str, table_name: str):
 
     postgres.close()
     return borsa_data.dict()
+
+def get_table_names_service():
+    postgres = Postgres(database=database, user=user, password=password, host=host, port=port)
+    query = "SELECT table_name FROM information_schema.tables WHERE table_schema='public'"
+    postgres.cur.execute(query)
+    table_names = [row[0] for row in postgres.cur.fetchall()]
+    postgres.close()
+    return table_names
+
+def get_service_list(folder_path: str):
+    file_pattern = os.path.join(f"app/{folder_path}", "*.py")
+    files = glob.glob(file_pattern)
+    return [os.path.basename(file) for file in files if os.path.basename(file) != "__init__.py"]
