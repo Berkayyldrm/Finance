@@ -2,7 +2,7 @@ from datetime import datetime
 import pandas as pd
 import pandas_ta as ta
 
-def calculate_macd(data: pd.DataFrame, date: str, fast_period: int = 12, slow_period: int = 26, signal_period: int = 9) -> tuple:
+def calculate_macd(data: pd.DataFrame, date: str, fast_period: int, slow_period: int, signal_period: int) -> tuple:
 
     end_date = datetime.strptime(date, "%Y-%m-%d").date()
     filtered_data = data.loc[data['date'] <= end_date]

@@ -2,7 +2,7 @@ from datetime import datetime
 import pandas as pd
 import pandas_ta as ta
 
-def calculate_stoch(data: pd.DataFrame, date: str, k: int = 9, d: int = 6, smooth_k: int = 3) -> tuple:
+def calculate_stoch(data: pd.DataFrame, date: str, k: int, d: int, smooth_k: int) -> tuple:
     # Calculate the highest high and lowest low for the past period days
 
     end_date = datetime.strptime(date, "%Y-%m-%d").date()

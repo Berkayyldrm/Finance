@@ -2,7 +2,7 @@ from datetime import datetime
 import pandas as pd
 import pandas_ta as ta
 
-def calculate_stoch_rsi(data: pd.DataFrame, date: str, period: int = 14, rsi_period: int = 14, k: int = 3, d: int = 3) -> tuple:
+def calculate_stoch_rsi(data: pd.DataFrame, date: str, period: int, rsi_period: int, k: int, d: int) -> tuple:
     end_date = datetime.strptime(date, "%Y-%m-%d").date()
     filtered_data = data.loc[data['date'] <= end_date]
 

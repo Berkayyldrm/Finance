@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import pandas_ta as ta
 
-def calculate_roc(data: pd.DataFrame, date: str, period: int = 12) -> float:
+def calculate_roc(data: pd.DataFrame, date: str, period: int) -> float:
     """
     7-14 days period
 

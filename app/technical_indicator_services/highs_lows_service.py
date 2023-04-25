@@ -5,22 +5,29 @@ from datetime import datetime, timedelta
 def calculate_hl(data: pd.DataFrame, date: str, period: int) -> float:
     end_date = datetime.strptime(date, "%Y-%m-%d").date()
     filtered_data = data.loc[data['date'] <= end_date].tail(period)
-
     # Calculate high and low values
-    high = filtered_data["high"].max()
-    low = filtered_data["low"].min()
-    return high, low
+    high_count = 0
+    low_count = 0
+    
+    for index, row in filtered_data.iterrows():
+        previous_index = index - 1
+        if previous_index in filtered_data.index:
+            previous_row = filtered_data.loc[previous_index]
+            if row["high"] > previous_row["high"]:
+                high_count += 1
+            if row["low"] < previous_row["low"]:
+                low_count += 1
+    ratio = 100 * high_count / (high_count + low_count)    
+      
+    return ratio
     
 
-def interpret_hl(high: float, low: float) -> str:
-    ratio = high / low
-    if ratio >= 1.1:
+def interpret_hl(ratio: float) -> str:
+    if ratio >= 70:
         return "Güçlü Al"
-    elif 1.05 < ratio < 1.1:
+    elif 50 < ratio < 70:
         return "Al"
-    elif 0.95 <= ratio <= 1.05:
-        return "Nötr"
-    elif 0.9 < ratio < 0.95:
+    elif 30 < ratio < 50:
         return "Sat"
-    elif ratio <= 0.9:
+    elif ratio <= 30:
         return "Güçlü Sat"

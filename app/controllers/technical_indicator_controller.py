@@ -21,13 +21,13 @@ import numpy as np
 
 router = APIRouter()
 
-@router.get("/rsi/{symbol}/{date}")
-async def calculate_rsi_value(symbol: str, date: str):
+@router.get("/rsi/{symbol}/{date}/{period}")
+async def calculate_rsi_value(symbol: str, date: str, period: int = 14):
     # Get all data for the symbol
     data = get_data_as_dataframe(table_name=symbol)
 
     # Calculate the RSI value
-    rsi = calculate_rsi(data, date, period=14)
+    rsi = calculate_rsi(data=data, date=date, period=period)
 
     # Interpret the RSI value
     sentiment = interpret_rsi(rsi)
@@ -36,7 +36,7 @@ async def calculate_rsi_value(symbol: str, date: str):
 
 
 @router.get("/stoch/{symbol}/{date}")
-async def calculate_stoch_value(symbol: str,date: str, k: int = 9, d: int = 6, smooth_k: int = 3):
+async def calculate_stoch_value(symbol: str, date: str, k: int = 9, d: int = 3, smooth_k: int = 6):
     # Get all data for the symbol
     data = get_data_as_dataframe(table_name=symbol)
 
@@ -61,12 +61,12 @@ async def calculate_stochrsi_value(symbol: str, date: str, period: int = 14, rsi
     return JSONResponse({"stochrsi": stochrsi, "sentiment": sentiment})
 
 @router.get("/macd/{symbol}/{date}")
-async def calculate_macd_value(symbol: str, date: str):
+async def calculate_macd_value(symbol: str, date: str, fast_period: int, slow_period: int, signal_period: int):
     # Get all data for the symbol
     data = get_data_as_dataframe(table_name=symbol)
 
     # Calculate the MACD value
-    macd = calculate_macd(data, date)
+    macd = calculate_macd(data, date, fast_period=fast_period, slow_period=slow_period, signal_period=signal_period)
     # Interpret the MACD value
     sentiment = interpret_macd(macd[0], macd[1], macd[2])
 
@@ -78,7 +78,7 @@ async def calculate_adx_value(symbol: str, date: str, period: int = 14):
     data = get_data_as_dataframe(table_name=symbol)
 
     # Calculate the ADX value
-    adx, dmp, dmn = calculate_adx(data, date, period)
+    adx, dmp, dmn = calculate_adx(data, date, period=period)
 
     # Interpret the ADX value
     sentiment = interpret_adx(adx, dmp, dmn)
@@ -97,7 +97,7 @@ async def calculate_williams_r_value(symbol: str, date: str, period: int = 14):
     data = get_data_as_dataframe(table_name=symbol)
 
     # Calculate Williams %R value
-    wr = calculate_williams_r(data, date, period)
+    wr = calculate_williams_r(data, date, period=period)
 
     sentiment = interpret_williams_r(wr)
 
@@ -109,7 +109,7 @@ async def calculate_cci_value(symbol: str, date: str, period: int = 14):
     data = get_data_as_dataframe(table_name=symbol)
 
     # Calculate CCI value
-    cci = calculate_cci(data, date, period)
+    cci = calculate_cci(data, date, period=period)
 
     sentiment = interpret_cci(cci)
 
@@ -121,7 +121,7 @@ async def calculate_cci_value(symbol: str, date: str, period: int = 14):
     data = get_data_as_dataframe(table_name=symbol)
 
     # Calculate CCI value
-    atr, percentage_atr = calculate_atr(data, date, period)
+    atr, percentage_atr = calculate_atr(data, date, period=period)
 
     sentiment = interpret_atr(percentage_atr)
 
@@ -133,11 +133,11 @@ async def calculate_hl_value(symbol: str, date: str, period: int = 14):
     data = get_data_as_dataframe(table_name=symbol)
 
     # Calculate High/Low value
-    high, low = calculate_hl(data, date, period)
+    ratio = calculate_hl(data, date, period=period)
 
-    sentiment = interpret_hl(high, low)
+    sentiment = interpret_hl(ratio)
 
-    return JSONResponse({"h": high, "l": low, "sentiment": sentiment})
+    return JSONResponse({"ratio": ratio, "sentiment": sentiment})
 
 @router.get("/ultimate_oscillator/{symbol}/{date}")
 async def calculate_ultimate_oscillator_value(symbol: str, date: str, short_period: int = 7, medium_period: int = 14, long_period: int = 28):
@@ -145,7 +145,7 @@ async def calculate_ultimate_oscillator_value(symbol: str, date: str, short_peri
     data = get_data_as_dataframe(table_name=symbol) 
 
     # Calculate the ultimate oscillator
-    oscillator = calculate_ultimate_oscillator(data, date, short_period, medium_period, long_period)
+    oscillator = calculate_ultimate_oscillator(data, date, short_period=short_period, medium_period=medium_period, long_period=long_period)
 
     # Interpret the oscillator value
     sentiment = interpret_ultimate_oscillator(oscillator)
@@ -153,12 +153,12 @@ async def calculate_ultimate_oscillator_value(symbol: str, date: str, short_peri
     return JSONResponse({"oscillator": oscillator, "sentiment": sentiment})
 
 @router.get("/roc/{symbol}/{date}/{period}")
-async def calculate_roc_value(symbol: str, date: str, period: int = 12):
+async def calculate_roc_value(symbol: str, date: str, period: int = 14):
     # Get all data for the symbol
     data = get_data_as_dataframe(table_name=symbol)
 
     # Calculate ROC value
-    roc = calculate_roc(data, date, period)
+    roc = calculate_roc(data, date, period=period)
 
     sentiment = interpret_roc(roc)
 

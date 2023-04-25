@@ -2,7 +2,7 @@ from datetime import datetime
 import pandas as pd
 import pandas_ta as ta
 
-def calculate_adx(data: pd.DataFrame, date: str, period: int = 14) -> float:
+def calculate_adx(data: pd.DataFrame, date: str, period: int) -> float:
 
     end_date = datetime.strptime(date, "%Y-%m-%d").date()
     filtered_data = data.loc[data['date'] <= end_date]
