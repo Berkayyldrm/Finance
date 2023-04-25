@@ -5,33 +5,38 @@ from typing import List
 
 def calculate_classic_pivot_points(data: pd.DataFrame, date: str, period: int) -> List[float]:
     end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date].head(period+1)
-    print(filtered_data)
-    high, low, close = filtered_data['high'], filtered_data['low'], filtered_data['close']
-    pivot = round((high + low + close) / 3, 3)
-    r1 = round((2 * pivot) - low, 3)
-    s1 = round((2 * pivot) - high, 3)
-    r2 = round(pivot + (high - low), 3)
-    s2 = round(pivot - (high - low), 3)
-    r3 = round(high + 2 * (pivot - low), 3)
-    s3 = round(low - 2 * (high - pivot), 3)
+    filtered_data = data.loc[data['date'] < end_date].tail(period)
 
+    high = filtered_data["high"].max()
+    low = filtered_data["low"].min()
+    close = filtered_data["close"].iloc[-1]
+
+    pivot = (high + low + close) / 3
+
+    r1 = 2 * pivot - low
+    r2 = pivot + (high - low)
+    r3 = high + 2 * (pivot - low)
+
+    s1 = 2 * pivot - high
+    s2 = pivot - (high - low)
+    s3 = low - 2 * (high - pivot)
+
+    resistance_levels = [r1, r2, r3]
+    support_levels = [s1, s2, s3]
     current_price = filtered_data.iloc[0]['close']
+    return support_levels, resistance_levels, pivot, current_price
 
-    return [pivot, r1, r2, r3, s1, s2, s3, current_price]
 
-
-def interpret_classic_pivot_points(classic_pivot_points: List[float], current_price: float) -> str:
-
-    if current_price > classic_pivot_points[3]:
-        return "Strong Bullish"
-    elif current_price > classic_pivot_points[2] and current_price <= classic_pivot_points[3]:
-        return "Bullish"
-    elif current_price > classic_pivot_points[1] and current_price <= classic_pivot_points[2]:
-        return "Neutral to Bullish"
-    elif current_price > classic_pivot_points[0] and current_price <= classic_pivot_points[1]:
-        return "Neutral"
-    elif current_price > classic_pivot_points[4] and current_price <= classic_pivot_points[0]:
-        return "Neutral to Bear"
+def interpret_classic_pivot_points(current_price: float, support_levels: List[float], resistance_levels: List[float], pivot: float) -> str:
+    if current_price > resistance_levels[1]:
+        return "Güçlü Al"
+    elif current_price > resistance_levels[0]:
+        return "Al"
+    elif current_price > pivot and current_price < resistance_levels[0]:
+        return "Zayıf Al"
+    elif current_price < pivot and current_price > support_levels[0]:
+        return "Zayıf Sat"
+    elif current_price > support_levels[1] and current_price <= support_levels[0]:
+        return "Sat"
     else:
-        return "Bearish"
+        return "Güçlü Sat"
