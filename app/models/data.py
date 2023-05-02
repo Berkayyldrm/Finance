@@ -8,5 +8,7 @@ class BorsaData(BaseModel):
     high: float
     low: float
     close: float
-    volume: float
+    volume: int
     percentage: float
+    dividend: float
+    stock_split: float

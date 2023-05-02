@@ -16,12 +16,12 @@ def calculate_stoch(data: pd.DataFrame, date: str, k: int, d: int, smooth_k: int
 
 def interpret_stoch(stoch_diff: float) -> str:
     if stoch_diff > 20:
-        return "Overbought"
+        return "Güçlü Al"
     elif stoch_diff < -20:
-        return "Oversold"
+        return "Güçlü Sat"
     elif stoch_diff > 0:
-        return "Buy"
+        return "Al"
     elif stoch_diff < 0:
-        return "Sell"
+        return "Sat"
     else:
-        return "Neutral"
+        return "Nötr"

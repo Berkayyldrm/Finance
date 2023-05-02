@@ -13,7 +13,7 @@ class Postgres:
         self.cur = self.conn.cursor()
 
     def fetch_all(self, table_name):
-        query = f"SELECT * FROM {table_name} ORDER BY tarih ASC"
+        query = f'SELECT * FROM "{table_name}" ORDER BY "Date" ASC'
         self.cur.execute(query)
         rows = self.cur.fetchall()
         return rows

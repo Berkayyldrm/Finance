@@ -2,8 +2,6 @@ from datetime import datetime
 import pandas as pd
 import pandas_ta as ta
 
-
-
 def calculate_rsi(data: pd.DataFrame, date: str, period: int) -> float:
     
     end_date = datetime.strptime(date, "%Y-%m-%d").date()

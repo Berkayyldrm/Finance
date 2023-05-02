@@ -33,7 +33,9 @@ def get_all_data(table_name: str):
             low=parsed_data.low,
             close=parsed_data.close,
             volume=parsed_data.volume,
-            percentage=parsed_data.percentage
+            percentage=parsed_data.percentage,
+            dividend=parsed_data.dividend,
+            stock_split=parsed_data.stock_split
         )
         borsa_data_list.append(borsa_data)
     return borsa_data_list
