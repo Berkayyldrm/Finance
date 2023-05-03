@@ -5,7 +5,7 @@ from typing import List
 def calculate_camarilla_pivot_points(data: pd.DataFrame, date: str, period: int) -> List[float]:
 
     end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] < end_date].tail(period)
+    filtered_data = data.loc[data['date'] <= end_date].tail(period)
 
     high = filtered_data["high"].max()
     low = filtered_data["low"].min()

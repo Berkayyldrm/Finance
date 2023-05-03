@@ -1,3 +1,10 @@
+import configparser
+
+from sqlalchemy import create_engine
+from app.controllers.moving_average_controller import calculate_simple_moving_average_value
+from app.moving_average_services.expo_moving_average_service import calculate_expo_moving_average_all, interpret_expo_moving_average_all
+from app.moving_average_services.simple_moving_average_service import calculate_simple_moving_average, calculate_simple_moving_average_all, interpret_simple_moving_average_all
+from app.pivot_services.classic_service import calculate_classic_pivot_points_all
 from app.services.dataframe_service import get_data_as_dataframe
 from datetime import datetime
 import pandas as pd
@@ -15,6 +22,19 @@ from app.technical_indicator_services.stochrsi_service import calculate_stoch_rs
 from app.technical_indicator_services.ultimate_oscillator_service import calculate_ultimate_oscillator_all
 from app.technical_indicator_services.williams_r_service import calculate_williams_r_all
 
+config = configparser.ConfigParser()
+config.read("config.ini")
+
+# Veritabanı bağlantı bilgilerini al
+db_config = config["postgresql"]
+database = db_config["database"]
+user = db_config["user"]
+password = db_config["password"]
+host = db_config["host"]
+port = db_config["port"]
+
+engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}')
+
 today = datetime.today().strftime("%Y-%m-%d")
 
 top_50_stock = ["AEFES", "AKBNK", "AKSA", "AKSEN", "ALARK", "ARCLK", "ASELS", "BERA", "BIMAS", "DOHOL",
@@ -24,9 +44,10 @@ top_50_stock = ["AEFES", "AKBNK", "AKSA", "AKSEN", "ALARK", "ARCLK", "ASELS", "B
                 "SISE", "SMRTG", "SOKM", "TAVHL", "TCELL", "THYAO", "TKFEN", "TOASO", "TSKB",
                 "TTKOM", "TUPRS", "VAKBN", "VESTL", "YKBNK"]
 
-top_1_stock = ["AKSA"]
+top_1_stock = ["THYAO"]
 
 p = {
+
     "rsi_period": 14,
 
     "stoch_k": 9,
@@ -60,10 +81,12 @@ p = {
     
     "bullbear_period": 13,
 
+    "pivot_period": 1
+
 }
 
-for symbol in top_1_stock:
-    data = get_data_as_dataframe(table_name=symbol)
+for stock_symbol in top_1_stock:
+    data = get_data_as_dataframe(table_name=stock_symbol)
     
     rsi = calculate_rsi_all(data=data, date=today, period=p["rsi_period"])
     stoch_k, stoch_d, stoch_diff = calculate_stoch_all(data=data, date=today, k=p["stoch_k"], d=p["stoch_d"], smooth_k=p["stoch_smooth_k"])
@@ -102,6 +125,9 @@ for symbol in top_1_stock:
     atr_df = pd.DataFrame(atr)
 
     hl_df = pd.DataFrame(hl, columns=[f"hl_ratio_{p['hl_period']}"])
+    hl_temp_df = hl_df[f"hl_ratio_{p['hl_period']}"].shift(p['hl_period']+1)
+    hl_temp2_df = hl_df[f"hl_ratio_{p['hl_period']}"].iloc[-p['hl_period']+1:]
+    hl_df = pd.concat([hl_temp_df, hl_temp2_df]).reset_index(drop=True)
 
     uo_df = pd.DataFrame(uo)
 
@@ -110,4 +136,31 @@ for symbol in top_1_stock:
     bullpower_df = pd.DataFrame(bull_power, columns=[f"Bull_power_{p['bullbear_period']}"])
     bearpower_df = pd.DataFrame(bear_power, columns=[f"Bear_power_{p['bullbear_period']}"])
 
-    print(macd_h_df)
+    technical_df = pd.concat([data[["date"]], rsi_df, stoch_k_df, stoch_d_df, stoch_diff_df, stochrsi_k_df, stochrsi_d_df, macd_df, macd_h_df, macd_s_df,
+               adx_df, adx_1_df, adx_2_df, willr_df, cci_df, atr_df, hl_df, uo_df, roc_df, bullpower_df, bearpower_df], axis=1)
+    
+    technical_df = technical_df.sort_values(by='date', ascending=False).reset_index(drop=True)
+
+    #################################################################################################################################################################################
+
+    ma_periods = [5, 10, 20, 50, 100, 200]
+
+    ma_df = pd.DataFrame()
+
+    for ma_period in ma_periods:
+        sma, sma_current_price = calculate_simple_moving_average_all(data=data, date=today, period=ma_period)
+        ma_df[f'SMA_{ma_period}'] = sma
+        ma_df[f'SMA_Intepretation_{ma_period}'] = interpret_simple_moving_average_all(ma_value=sma, current_price=sma_current_price)
+
+        ema, ema_current_price = calculate_expo_moving_average_all(data=data, date=today, period=ma_period)
+        ma_df[f'EMA_{ma_period}'] = ema
+        ma_df[f'EMA_Intepretation_{ma_period}'] = interpret_expo_moving_average_all(ma_value=ema, current_price=ema_current_price)
+    
+    ma_df = pd.concat([data["date"], ma_df], axis=1)
+    ma_df = ma_df.sort_values(by='date', ascending=False).reset_index(drop=True)
+    
+    #################################################################################################################################################################################
+    
+    test = calculate_classic_pivot_points_all(data=data, date=today, period=p["pivot_period"])
+    print(test)
+    #df.to_sql(stock_symbol, engine, schema="technical", if_exists='replace', index=False)
