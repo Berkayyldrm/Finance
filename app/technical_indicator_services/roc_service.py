@@ -16,8 +16,19 @@ def calculate_roc(data: pd.DataFrame, date: str, period: int) -> float:
     """
     end_date = datetime.strptime(date, "%Y-%m-%d").date()
     filtered_data = data.loc[data['date'] <= end_date]
+
     roc = ta.roc(filtered_data["close"], length=period)
+
     return roc.iloc[-1]
+
+def calculate_roc_all(data: pd.DataFrame, date: str, period: int) -> float:
+
+    end_date = datetime.strptime(date, "%Y-%m-%d").date()
+    filtered_data = data.loc[data['date'] <= end_date]
+
+    roc = ta.roc(filtered_data["close"], length=period)
+    
+    return roc
 
 def interpret_roc(roc_value: float) -> str:
     if roc_value > 10:

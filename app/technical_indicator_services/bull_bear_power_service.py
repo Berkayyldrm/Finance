@@ -6,10 +6,22 @@ def calculate_bull_bear_power(data: pd.DataFrame, date: str, period: int) -> flo
 
     end_date = datetime.strptime(date, "%Y-%m-%d").date()
     filtered_data = data.loc[data['date'] <= end_date]
+    
     bull_power = filtered_data["high"] - ta.ema(filtered_data["close"], length=period)
     bear_power = filtered_data["low"] - ta.ema(filtered_data["close"], length=period)
 
     return bull_power.iloc[-1], bear_power.iloc[-1]
+
+
+def calculate_bull_bear_power_all(data: pd.DataFrame, date: str, period: int) -> float:
+
+    end_date = datetime.strptime(date, "%Y-%m-%d").date()
+    filtered_data = data.loc[data['date'] <= end_date]
+
+    bull_power = filtered_data["high"] - ta.ema(filtered_data["close"], length=period)
+    bear_power = filtered_data["low"] - ta.ema(filtered_data["close"], length=period)
+
+    return bull_power, bear_power
 
 
 def interpret_bull_bear_power(bull_power: float, bear_power: float) -> str:

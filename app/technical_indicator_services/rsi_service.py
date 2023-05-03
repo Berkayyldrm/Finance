@@ -10,6 +10,14 @@ def calculate_rsi(data: pd.DataFrame, date: str, period: int) -> float:
     rsi = ta.rsi(filtered_data['close'], length=period)
     return rsi.iloc[-1]
 
+def calculate_rsi_all(data: pd.DataFrame, date: str, period: int) -> float:
+    
+    end_date = datetime.strptime(date, "%Y-%m-%d").date()
+    filtered_data = data.loc[data['date'] <= end_date]
+
+    rsi = ta.rsi(filtered_data['close'], length=period)
+    return rsi
+
 def interpret_rsi(rsi_value: float) -> str:
     if rsi_value > 70:
         return "Güçlü Sat"

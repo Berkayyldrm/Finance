@@ -61,7 +61,7 @@ async def calculate_stochrsi_value(symbol: str, date: str, period: int = 14, rsi
     return JSONResponse({"stochrsi": stochrsi, "sentiment": sentiment})
 
 @router.get("/macd/{symbol}/{date}")
-async def calculate_macd_value(symbol: str, date: str, fast_period: int, slow_period: int, signal_period: int):
+async def calculate_macd_value(symbol: str, date: str, fast_period: int = 12, slow_period: int = 26, signal_period: int = 9):
     # Get all data for the symbol
     data = get_data_as_dataframe(table_name=symbol)
 
