@@ -68,7 +68,7 @@ for symbol in top_1_stock:
     rsi = calculate_rsi_all(data=data, date=today, period=p["rsi_period"])
     stoch_k, stoch_d, stoch_diff = calculate_stoch_all(data=data, date=today, k=p["stoch_k"], d=p["stoch_d"], smooth_k=p["stoch_smooth_k"])
     stochrsi_k, stochrsi_d = calculate_stoch_rsi_all(data=data, date=today, period=p["stochrsi_period"], rsi_period=p["stochrsi_rsi_period"], k=p["stochrsi_k"], d=p["stochrsi_d"])
-    macd = calculate_macd_all(data=data, date=today, fast_period=p["macd_fast_period"], slow_period=p["macd_slow_period"], signal_period=p["macd_signal_period"])
+    macd, macd_h, macd_s = calculate_macd_all(data=data, date=today, fast_period=p["macd_fast_period"], slow_period=p["macd_slow_period"], signal_period=p["macd_signal_period"])
     adx, adx_1, adx_2 = calculate_adx_all(data=data, date=today, period=p["adx_period"])
     willr = calculate_williams_r_all(data=data, date=today, period=p["willr_period"])
     cci = calculate_cci_all(data=data, date=today, period=p["cci_period"])
@@ -88,6 +88,8 @@ for symbol in top_1_stock:
     stochrsi_d_df = pd.DataFrame(stochrsi_d)
 
     macd_df = pd.DataFrame(macd)
+    macd_h_df = pd.DataFrame(macd_h)
+    macd_s_df = pd.DataFrame(macd_s)
 
     adx_df = pd.DataFrame(adx)
     adx_1_df = pd.DataFrame(adx_1)
@@ -108,4 +110,4 @@ for symbol in top_1_stock:
     bullpower_df = pd.DataFrame(bull_power, columns=[f"Bull_power_{p['bullbear_period']}"])
     bearpower_df = pd.DataFrame(bear_power, columns=[f"Bear_power_{p['bullbear_period']}"])
 
-    print(rsi_df)
+    print(macd_h_df)

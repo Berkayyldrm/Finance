@@ -8,8 +8,8 @@ def calculate_macd(data: pd.DataFrame, date: str, fast_period: int, slow_period:
     filtered_data = data.loc[data['date'] <= end_date]
 
     macd = ta.macd(filtered_data["close"], fast=fast_period, slow=slow_period, signal=signal_period)
-
-    return macd[f'MACD_{fast_period}_{slow_period}_{signal_period}'].iloc[-1]
+    print(macd)
+    return macd[f'MACD_{fast_period}_{slow_period}_{signal_period}'].iloc[-1], macd[f'MACDh_{fast_period}_{slow_period}_{signal_period}'].iloc[-1], macd[f'MACDs_{fast_period}_{slow_period}_{signal_period}'].iloc[-1]
 
 def calculate_macd_all(data: pd.DataFrame, date: str, fast_period: int, slow_period: int, signal_period: int) -> float:
 
@@ -18,7 +18,7 @@ def calculate_macd_all(data: pd.DataFrame, date: str, fast_period: int, slow_per
 
     macd = ta.macd(filtered_data["close"], fast=fast_period, slow=slow_period, signal=signal_period)
 
-    return macd[f'MACD_{fast_period}_{slow_period}_{signal_period}']
+    return macd[f'MACD_{fast_period}_{slow_period}_{signal_period}'], macd[f'MACDh_{fast_period}_{slow_period}_{signal_period}'], macd[f'MACDs_{fast_period}_{slow_period}_{signal_period}']
 
 
 def interpret_macd(macd: float, signal: float, histogram: float) -> str:
@@ -35,13 +35,13 @@ def interpret_macd(macd: float, signal: float, histogram: float) -> str:
     """
     if histogram > 0:
         if macd > signal:
-            return "Strong Buy"
+            return "Güçlü Al"
         else:
-            return "Buy"
+            return "Al"
     elif histogram < 0:
         if macd < signal:
-            return "Strong Sell"
+            return "Güçlü Sat"
         else:
-            return "Sell"
+            return "Sat"
     else:
-        return "Neutral"
+        return "Nötr"
