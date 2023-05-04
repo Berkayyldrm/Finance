@@ -55,8 +55,8 @@ p = {
     "rsi_period": 14,
 
     "stoch_k": 9,
-    "stoch_d": 3,
-    "stoch_smooth_k": 6,
+    "stoch_d": 6,
+    "stoch_smooth_k": 3,
 
     "stochrsi_period": 14,
     "stochrsi_rsi_period": 14,

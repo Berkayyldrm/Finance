@@ -36,7 +36,7 @@ async def calculate_rsi_value(symbol: str, date: str, period: int = 14):
 
 
 @router.get("/stoch/{symbol}/{date}")
-async def calculate_stoch_value(symbol: str, date: str, k: int = 9, d: int = 3, smooth_k: int = 6):
+async def calculate_stoch_value(symbol: str, date: str, k: int = 9, d: int = 6, smooth_k: int = 3):
     # Get all data for the symbol
     data = get_data_as_dataframe(table_name=symbol)
 
