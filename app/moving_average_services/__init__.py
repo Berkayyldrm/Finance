@@ -1,0 +1,1 @@
+from . import simple_moving_average_service
