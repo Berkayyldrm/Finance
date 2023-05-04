@@ -4,7 +4,11 @@ from sqlalchemy import create_engine
 from app.controllers.moving_average_controller import calculate_simple_moving_average_value
 from app.moving_average_services.expo_moving_average_service import calculate_expo_moving_average_all, interpret_expo_moving_average_all
 from app.moving_average_services.simple_moving_average_service import calculate_simple_moving_average, calculate_simple_moving_average_all, interpret_simple_moving_average_all
-from app.pivot_services.classic_service import calculate_classic_pivot_points_all
+from app.pivot_services.camarilla_service import calculate_camarilla_pivot_points_all, interpret_camarilla_pivot_points_all
+from app.pivot_services.classic_service import calculate_classic_pivot_points_all, interpret_classic_pivot_points_all
+from app.pivot_services.demark_service import calculate_demark_pivot_points_all, interpret_demark_pivot_points_all
+from app.pivot_services.fibonacci_service import calculate_fibonacci_pivot_points_all, interpret_fibonacci_pivot_points_all
+from app.pivot_services.woodie_service import calculate_woodie_pivot_points_all, interpret_woodie_pivot_points_all
 from app.services.dataframe_service import get_data_as_dataframe
 from datetime import datetime
 import pandas as pd
@@ -141,7 +145,7 @@ for stock_symbol in top_1_stock:
     
     technical_df = technical_df.sort_values(by='date', ascending=False).reset_index(drop=True)
 
-    #################################################################################################################################################################################
+#####################################################################################################################################################################################
 
     ma_periods = [5, 10, 20, 50, 100, 200]
 
@@ -159,8 +163,42 @@ for stock_symbol in top_1_stock:
     ma_df = pd.concat([data["date"], ma_df], axis=1)
     ma_df = ma_df.sort_values(by='date', ascending=False).reset_index(drop=True)
     
-    #################################################################################################################################################################################
+#####################################################################################################################################################################################
     
-    test = calculate_classic_pivot_points_all(data=data, date=today, period=p["pivot_period"])
-    print(test)
-    #df.to_sql(stock_symbol, engine, schema="technical", if_exists='replace', index=False)
+    classic_pivot = calculate_classic_pivot_points_all(data=data, date=today, period=p["pivot_period"])
+    classic_pivot_df = pd.DataFrame(classic_pivot, columns=["classic_support_levels", "classic_resistance_levels", "classic_pivot", "classic_current_price"])
+    classic_pivot_interpretation = interpret_classic_pivot_points_all(classic_pivot_df["classic_current_price"], classic_pivot_df["classic_support_levels"], classic_pivot_df["classic_resistance_levels"], classic_pivot_df["classic_pivot"])
+    classic_pivot_interpretation_df = pd.DataFrame(classic_pivot_interpretation, columns=["classic_pivot_interpretation"])
+
+    fibonacci_pivot = calculate_fibonacci_pivot_points_all(data=data, date=today, period=p["pivot_period"])
+    fibonacci_pivot_df = pd.DataFrame(fibonacci_pivot, columns=["fibonacci_support_levels", "fibonacci_resistance_levels", "fibonacci_pivot", "fibonacci_current_price"])
+    fibonacci_pivot_interpretation = interpret_fibonacci_pivot_points_all(fibonacci_pivot_df["fibonacci_current_price"], fibonacci_pivot_df["fibonacci_support_levels"], fibonacci_pivot_df["fibonacci_resistance_levels"], fibonacci_pivot_df["fibonacci_pivot"])
+    fibonacci_pivot_interpretation_df = pd.DataFrame(fibonacci_pivot_interpretation, columns=["fibonacci_pivot_interpretation"])
+    
+    camarilla_pivot = calculate_camarilla_pivot_points_all(data=data, date=today, period=p["pivot_period"])
+    camarilla_pivot_df = pd.DataFrame(camarilla_pivot, columns=["camarilla_support_levels", "camarilla_resistance_levels", "camarilla_pivot", "camarilla_current_price"])
+    camarilla_pivot_interpretation = interpret_camarilla_pivot_points_all(camarilla_pivot_df["camarilla_current_price"], camarilla_pivot_df["camarilla_support_levels"], camarilla_pivot_df["camarilla_resistance_levels"], camarilla_pivot_df["camarilla_pivot"])
+    camarilla_pivot_interpretation_df = pd.DataFrame(camarilla_pivot_interpretation, columns=["camarilla_pivot_interpretation"])
+    
+    woodie_pivot = calculate_woodie_pivot_points_all(data=data, date=today, period=p["pivot_period"])
+    woodie_pivot_df = pd.DataFrame(woodie_pivot, columns=["woodie_support_levels", "woodie_resistance_levels", "woodie_pivot", "woodie_current_price"])
+    woodie_pivot_interpretation = interpret_woodie_pivot_points_all(woodie_pivot_df["woodie_current_price"], woodie_pivot_df["woodie_support_levels"], woodie_pivot_df["woodie_resistance_levels"], woodie_pivot_df["woodie_pivot"])
+    woodie_pivot_interpretation_df = pd.DataFrame(woodie_pivot_interpretation, columns=["woodie_pivot_interpretation"])
+
+    
+    demark_pivot = calculate_demark_pivot_points_all(data=data, date=today, period=p["pivot_period"])
+    demark_pivot_df = pd.DataFrame(demark_pivot, columns=["demark_support_levels", "demark_resistance_levels", "demark_pivot", "demark_current_price"])
+    demark_pivot_interpretation = interpret_demark_pivot_points_all(demark_pivot_df["demark_current_price"], demark_pivot_df["demark_support_levels"], demark_pivot_df["demark_resistance_levels"], demark_pivot_df["demark_pivot"])
+    demark_pivot_interpretation_df = pd.DataFrame(demark_pivot_interpretation, columns=["demark_pivot_interpretation"])
+
+    pivot_df = pd.concat([data["date"], classic_pivot_interpretation_df, classic_pivot_df, fibonacci_pivot_interpretation_df, fibonacci_pivot_df,
+                          camarilla_pivot_interpretation_df, camarilla_pivot_df, woodie_pivot_interpretation_df, woodie_pivot_df,
+                          demark_pivot_interpretation_df, demark_pivot_df], axis=1)
+    
+    pivot_df = pivot_df.sort_values(by='date', ascending=False).reset_index(drop=True)
+
+#################################################################################################################################################################################
+
+    df = pd.concat([technical_df, ma_df, pivot_df], axis=1)
+    df = df.loc[:,~df.columns.duplicated()].copy()
+    df.to_sql(stock_symbol, engine, schema="technical", if_exists='replace', index=False)
