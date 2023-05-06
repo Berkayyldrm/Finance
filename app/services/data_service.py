@@ -18,9 +18,9 @@ password = db_config["password"]
 host = db_config["host"]
 port = db_config["port"]
 
-def get_all_data(table_name: str):
+def get_all_data(schema_name: str, table_name: str):
     postgres = Postgres(database=database, user=user, password=password, host=host, port=port)
-    data = postgres.fetch_all(table_name)
+    data = postgres.fetch_all(schema_name, table_name)
     postgres.close()
 
     borsa_data_list = []
@@ -42,7 +42,8 @@ def get_all_data(table_name: str):
 
 def get_dataframe(table_name: str):
     postgres = Postgres(database=database, user=user, password=password, host=host, port=port)
-    data = postgres.fetch_all(table_name)
+    schema_name = "public"
+    data = postgres.fetch_all(schema_name, table_name)
     postgres.close()
 
     df = DataFrame(data, columns=["date", "open", "high", "low", "close", "volume", "percentage"])

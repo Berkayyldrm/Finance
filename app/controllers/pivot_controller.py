@@ -12,7 +12,7 @@ router = APIRouter()
 @router.get("/classic/{symbol}/{date}/{period}")
 async def calculate_moving_average_value(symbol: str, date: str, period: int):
 
-    data = get_data_as_dataframe(table_name=symbol)
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     support_levels, resistance_levels, pivot, current_price = calculate_classic_pivot_points(data, date, period)
 
@@ -22,7 +22,7 @@ async def calculate_moving_average_value(symbol: str, date: str, period: int):
 
 @router.get("/fibonacci/{symbol}/{date}/{period}")
 async def calculate_fibonacci_pivot_points_value(symbol: str, date: str, period: int):
-    data = get_data_as_dataframe(table_name=symbol)
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     support_levels, resistance_levels, pivot, current_price = calculate_fibonacci_pivot_points(data, date, period)
 
@@ -32,7 +32,7 @@ async def calculate_fibonacci_pivot_points_value(symbol: str, date: str, period:
 
 @router.get("/camarilla/{symbol}/{date}/{period}")
 async def calculate_camarilla_pivot_points_value(symbol: str, date: str, period: int):
-    data = get_data_as_dataframe(table_name=symbol)
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     support_levels, resistance_levels, pivot, current_price = calculate_camarilla_pivot_points(data, date, period)
   
@@ -42,7 +42,7 @@ async def calculate_camarilla_pivot_points_value(symbol: str, date: str, period:
 
 @router.get("/woodie/{symbol}/{date}/{period}")
 async def calculate_woodie_pivot_points_value(symbol: str, date: str, period: int):
-    data = get_data_as_dataframe(table_name=symbol)
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     support_levels, resistance_levels, pivot, current_price = calculate_woodie_pivot_points(data, date, period)
   
@@ -52,7 +52,7 @@ async def calculate_woodie_pivot_points_value(symbol: str, date: str, period: in
 
 @router.get("/demark/{symbol}/{date}/{period}")
 async def calculate_demark_pivot_points_value(symbol: str, date: str, period: int):
-    data = get_data_as_dataframe(table_name=symbol)
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     support_levels, resistance_levels, pivot, current_price = calculate_demark_pivot_points(data, date, period)
   

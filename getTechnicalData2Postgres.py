@@ -90,8 +90,7 @@ p = {
 }
 
 for stock_symbol in top_1_stock:
-    data = get_data_as_dataframe(table_name=stock_symbol)
-    
+    data = get_data_as_dataframe(schema_name="public", table_name=stock_symbol)
     rsi = calculate_rsi_all(data=data, date=today, period=p["rsi_period"])
     stoch_k, stoch_d, stoch_diff = calculate_stoch_all(data=data, date=today, k=p["stoch_k"], d=p["stoch_d"], smooth_k=p["stoch_smooth_k"])
     stochrsi_k, stochrsi_d = calculate_stoch_rsi_all(data=data, date=today, period=p["stochrsi_period"], rsi_period=p["stochrsi_rsi_period"], k=p["stochrsi_k"], d=p["stochrsi_d"])

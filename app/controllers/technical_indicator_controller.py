@@ -24,7 +24,7 @@ router = APIRouter()
 @router.get("/rsi/{symbol}/{date}/{period}")
 async def calculate_rsi_value(symbol: str, date: str, period: int = 14):
     # Get all data for the symbol
-    data = get_data_as_dataframe(table_name=symbol)
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     # Calculate the RSI value
     rsi = calculate_rsi(data=data, date=date, period=period)
@@ -38,7 +38,7 @@ async def calculate_rsi_value(symbol: str, date: str, period: int = 14):
 @router.get("/stoch/{symbol}/{date}")
 async def calculate_stoch_value(symbol: str, date: str, k: int = 9, d: int = 6, smooth_k: int = 3):
     # Get all data for the symbol
-    data = get_data_as_dataframe(table_name=symbol)
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     # Calculate the STOCH value
     stoch = calculate_stoch(data, date, k=k, d=d, smooth_k=smooth_k)
@@ -51,7 +51,7 @@ async def calculate_stoch_value(symbol: str, date: str, k: int = 9, d: int = 6, 
 @router.get("/stochrsi/{symbol}/{date}")
 async def calculate_stochrsi_value(symbol: str, date: str, period: int = 14, rsi_period: int = 14, k: int = 3, d: int = 3):
     # Get all data for the symbol
-    data = get_data_as_dataframe(table_name=symbol)
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     # Calculate the STOCHRSI value
     stochrsi = calculate_stoch_rsi(data, date, period=period, rsi_period=rsi_period, k=k, d=d)
@@ -63,7 +63,7 @@ async def calculate_stochrsi_value(symbol: str, date: str, period: int = 14, rsi
 @router.get("/macd/{symbol}/{date}")
 async def calculate_macd_value(symbol: str, date: str, fast_period: int = 12, slow_period: int = 26, signal_period: int = 9):
     # Get all data for the symbol
-    data = get_data_as_dataframe(table_name=symbol)
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     # Calculate the MACD value
     macd = calculate_macd(data, date, fast_period=fast_period, slow_period=slow_period, signal_period=signal_period)
@@ -75,7 +75,7 @@ async def calculate_macd_value(symbol: str, date: str, fast_period: int = 12, sl
 @router.get("/adx/{symbol}/{date}")
 async def calculate_adx_value(symbol: str, date: str, period: int = 14):
     # Get all data for the symbol
-    data = get_data_as_dataframe(table_name=symbol)
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     # Calculate the ADX value
     adx, dmp, dmn = calculate_adx(data, date, period=period)
@@ -94,7 +94,7 @@ async def calculate_adx_value(symbol: str, date: str, period: int = 14):
 @router.get("/williams_r/{symbol}/{date}")
 async def calculate_williams_r_value(symbol: str, date: str, period: int = 14):
     # Get all data for the symbol
-    data = get_data_as_dataframe(table_name=symbol)
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     # Calculate Williams %R value
     wr = calculate_williams_r(data, date, period=period)
@@ -106,7 +106,7 @@ async def calculate_williams_r_value(symbol: str, date: str, period: int = 14):
 @router.get("/cci/{symbol}/{date}")
 async def calculate_cci_value(symbol: str, date: str, period: int = 14):
     # Get all data for the symbol
-    data = get_data_as_dataframe(table_name=symbol)
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     # Calculate CCI value
     cci = calculate_cci(data, date, period=period)
@@ -118,7 +118,7 @@ async def calculate_cci_value(symbol: str, date: str, period: int = 14):
 @router.get("/atr/{symbol}/{date}")
 async def calculate_cci_value(symbol: str, date: str, period: int = 14):
     # Get all data for the symbol
-    data = get_data_as_dataframe(table_name=symbol)
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     # Calculate CCI value
     atr, percentage_atr = calculate_atr(data, date, period=period)
@@ -130,7 +130,7 @@ async def calculate_cci_value(symbol: str, date: str, period: int = 14):
 @router.get("/high_lows/{symbol}/{date}")
 async def calculate_hl_value(symbol: str, date: str, period: int = 14):
     # Get all data for the symbol
-    data = get_data_as_dataframe(table_name=symbol)
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     # Calculate High/Low value
     ratio = calculate_hl(data, date, period=period)
@@ -142,7 +142,7 @@ async def calculate_hl_value(symbol: str, date: str, period: int = 14):
 @router.get("/ultimate_oscillator/{symbol}/{date}")
 async def calculate_ultimate_oscillator_value(symbol: str, date: str, short_period: int = 7, medium_period: int = 14, long_period: int = 28):
     # Get all data for the symbol
-    data = get_data_as_dataframe(table_name=symbol) 
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol) 
 
     # Calculate the ultimate oscillator
     oscillator = calculate_ultimate_oscillator(data, date, short_period=short_period, medium_period=medium_period, long_period=long_period)
@@ -155,7 +155,7 @@ async def calculate_ultimate_oscillator_value(symbol: str, date: str, short_peri
 @router.get("/roc/{symbol}/{date}/{period}")
 async def calculate_roc_value(symbol: str, date: str, period: int = 14):
     # Get all data for the symbol
-    data = get_data_as_dataframe(table_name=symbol)
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     # Calculate ROC value
     roc = calculate_roc(data, date, period=period)
@@ -167,7 +167,7 @@ async def calculate_roc_value(symbol: str, date: str, period: int = 14):
 @router.get("/bull_bear_power/{symbol}/{date}") # X
 async def calculate_bull_bear_power_value(symbol: str, date: str, period: int = 13):
     # Get all data for the symbol
-    data = get_data_as_dataframe(table_name=symbol)
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
     # Calculate Bull/Bear Power value
     bull_power, bear_power = calculate_bull_bear_power(data, date, period)
 

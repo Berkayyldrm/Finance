@@ -8,8 +8,8 @@ router = APIRouter()
 
 @router.get("/simple/{symbol}/{date}/{period}")
 async def calculate_simple_moving_average_value(symbol: str, date: str, period: int):
-
-    data = get_data_as_dataframe(table_name=symbol)
+    
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     # Get all data for the symbol
     ma, current_price = calculate_simple_moving_average(data, date, period)
@@ -20,7 +20,7 @@ async def calculate_simple_moving_average_value(symbol: str, date: str, period: 
 @router.get("/expo/{symbol}/{date}/{period}")
 async def calculate_expo_moving_average_value(symbol: str, date: str, period: int):
 
-    data = get_data_as_dataframe(table_name=symbol)
+    data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     # Get all data for the symbol
     ma, current_price = calculate_expo_moving_average(data, date, period)
