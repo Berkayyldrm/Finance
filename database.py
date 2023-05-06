@@ -27,7 +27,7 @@ class Postgres:
         query = f""" SELECT column_name FROM information_schema.columns WHERE table_schema = '{schema_name}' AND table_name = '{table_name}';"""
         self.cur.execute(query)
         column_names = [row[0] for row in self.cur.fetchall()]
-        print(rows)
+
         return rows, column_names
 
     def close(self):

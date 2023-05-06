@@ -146,18 +146,18 @@ for stock_symbol in top_1_stock:
 
 #####################################################################################################################################################################################
 
-    ma_periods = [5, 10, 20, 50, 100, 200]
+    ma_periods = [5, 10, 20, 50]
 
     ma_df = pd.DataFrame()
 
     for ma_period in ma_periods:
         sma, sma_current_price = calculate_simple_moving_average_all(data=data, date=today, period=ma_period)
         ma_df[f'SMA_{ma_period}'] = sma
-        ma_df[f'SMA_Intepretation_{ma_period}'] = interpret_simple_moving_average_all(ma_value=sma, current_price=sma_current_price)
+        ma_df[f'SMA_interpretation_{ma_period}'] = interpret_simple_moving_average_all(ma_value=sma, current_price=sma_current_price)
 
         ema, ema_current_price = calculate_expo_moving_average_all(data=data, date=today, period=ma_period)
         ma_df[f'EMA_{ma_period}'] = ema
-        ma_df[f'EMA_Intepretation_{ma_period}'] = interpret_expo_moving_average_all(ma_value=ema, current_price=ema_current_price)
+        ma_df[f'EMA_interpretation_{ma_period}'] = interpret_expo_moving_average_all(ma_value=ema, current_price=ema_current_price)
     
     ma_df = pd.concat([data["date"], ma_df], axis=1)
     ma_df = ma_df.sort_values(by='date', ascending=False).reset_index(drop=True)
