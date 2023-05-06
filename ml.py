@@ -1,7 +1,7 @@
 from datetime import datetime
 import pandas as pd
 
-from app.services.dataframe_service import get_data_as_dataframe
+from app.services.dataframe_service import get_technical_data_as_dataframe
 
 today = datetime.today().strftime("%Y-%m-%d")
 
@@ -15,6 +15,6 @@ top_50_stock = ["AEFES", "AKBNK", "AKSA", "AKSEN", "ALARK", "ARCLK", "ASELS", "B
 top_1_stock = ["THYAO"]
 
 for stock_symbol in top_1_stock:
-    data = get_data_as_dataframe(schema_name="technical", table_name=stock_symbol)
+    data = get_technical_data_as_dataframe(schema_name="technical", table_name=stock_symbol)
 
 print(data)

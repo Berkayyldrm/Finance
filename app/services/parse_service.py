@@ -1,5 +1,6 @@
 from datetime import datetime
 from app.models.data import BorsaData
+
 def parse_data(data: tuple):
     data = "*".join(str(item) for item in data)
     fields = data.split("*")

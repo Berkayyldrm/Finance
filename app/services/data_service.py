@@ -40,6 +40,12 @@ def get_all_data(schema_name: str, table_name: str):
         borsa_data_list.append(borsa_data)
     return borsa_data_list
 
+def get_all_technical_data(schema_name: str, table_name: str):
+    postgres = Postgres(database=database, user=user, password=password, host=host, port=port)
+    data, column_names = postgres.fetch_all_with_column_names(schema_name, table_name)
+    postgres.close()
+    return data, column_names
+
 def get_dataframe(table_name: str):
     postgres = Postgres(database=database, user=user, password=password, host=host, port=port)
     schema_name = "public"
