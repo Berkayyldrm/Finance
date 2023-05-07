@@ -2,6 +2,7 @@ from fastapi import FastAPI
 import logging
 from datetime import datetime, timedelta
 import asyncio
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.controllers import data_controller, machine_learning_controller, technical_indicator_controller, moving_average_controller, pivot_controller
 logging.basicConfig(level=logging.DEBUG)
@@ -13,6 +14,16 @@ app.include_router(technical_indicator_controller.router, prefix="/technical-ind
 app.include_router(moving_average_controller.router, prefix="/moving-average", tags=["moving-average"])
 app.include_router(pivot_controller.router, prefix="/pivot", tags=["pivot"])
 app.include_router(machine_learning_controller.router, prefix="/machine-learning", tags=["machine-learning"])
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 async def my_task():
     while True:
