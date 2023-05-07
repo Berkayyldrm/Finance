@@ -2,7 +2,7 @@ from datetime import datetime
 import pandas as pd
 import pandas_ta as ta
 
-def calculate_stoch_rsi(data: pd.DataFrame, date: str, period: int, rsi_period: int, k: int, d: int) -> float:
+def calculate_stochrsi(data: pd.DataFrame, date: str, period: int, rsi_period: int, k: int, d: int) -> float:
     
     end_date = datetime.strptime(date, "%Y-%m-%d").date()
     filtered_data = data.loc[data['date'] <= end_date]
@@ -12,7 +12,7 @@ def calculate_stoch_rsi(data: pd.DataFrame, date: str, period: int, rsi_period: 
     return stochrsi['STOCHRSIk_{}_{}_{}_{}'.format(rsi_period, period, k, d)].iloc[-1], stochrsi['STOCHRSId_{}_{}_{}_{}'.format(rsi_period, period, k, d)].iloc[-1]
 
 
-def calculate_stoch_rsi_all(data: pd.DataFrame, date: str, period: int, rsi_period: int, k: int, d: int) -> float:
+def calculate_stochrsi_all(data: pd.DataFrame, date: str, period: int, rsi_period: int, k: int, d: int) -> float:
     
     end_date = datetime.strptime(date, "%Y-%m-%d").date()
     filtered_data = data.loc[data['date'] <= end_date]
@@ -22,7 +22,7 @@ def calculate_stoch_rsi_all(data: pd.DataFrame, date: str, period: int, rsi_peri
     return stochrsi['STOCHRSIk_{}_{}_{}_{}'.format(rsi_period, period, k, d)], stochrsi['STOCHRSId_{}_{}_{}_{}'.format(rsi_period, period, k, d)]
 
 
-def interpret_stoch_rsi(stochrsi_k: float, stochrsi_d: float) -> str:
+def interpret_stochrsi(stochrsi_k: float, stochrsi_d: float) -> str:
     if stochrsi_k > 80 and stochrsi_d > 80:
         return "Güçlü Al"
     elif stochrsi_k < 20 and stochrsi_d < 20:
