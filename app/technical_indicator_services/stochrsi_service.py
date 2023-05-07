@@ -1,21 +1,19 @@
-from datetime import datetime
+from datetime import datetime, date
 import pandas as pd
 import pandas_ta as ta
 
-def calculate_stochrsi(data: pd.DataFrame, date: str, period: int, rsi_period: int, k: int, d: int) -> float:
+def calculate_stochrsi(data: pd.DataFrame, date: date, period: int, rsi_period: int, k: int, d: int) -> float:
     
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date]
+    filtered_data = data.loc[data['date'] <= date]
 
     stochrsi = ta.stochrsi(close=filtered_data['close'], rsi_length=rsi_period, length=period, k=k, smooth_d=d)
 
     return stochrsi['STOCHRSIk_{}_{}_{}_{}'.format(rsi_period, period, k, d)].iloc[-1], stochrsi['STOCHRSId_{}_{}_{}_{}'.format(rsi_period, period, k, d)].iloc[-1]
 
 
-def calculate_stochrsi_all(data: pd.DataFrame, date: str, period: int, rsi_period: int, k: int, d: int) -> float:
+def calculate_stochrsi_all(data: pd.DataFrame, date: date, period: int, rsi_period: int, k: int, d: int) -> float:
     
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date]
+    filtered_data = data.loc[data['date'] <= date]
 
     stochrsi = ta.stochrsi(close=filtered_data['close'], rsi_length=rsi_period, length=period, k=k, smooth_d=d)
 

@@ -15,7 +15,7 @@ from app.technical_indicator_services.williams_r_service import calculate_willia
 from app.services.data_service import get_all_data
 from app.models.data import BorsaData
 from typing import List, Dict, Optional
-from datetime import datetime
+from datetime import datetime, date
 from fastapi.responses import JSONResponse
 import numpy as np
 
@@ -24,7 +24,7 @@ router = APIRouter()
 @router.get("/{symbol}/{date}/")
 async def get_technical_indicators(
     symbol: str,
-    date: str,
+    date: date,
     rsi_period: Optional[int] = 14,
     stoch_k: Optional[int] = 9,
     stoch_d: Optional[int] = 6,

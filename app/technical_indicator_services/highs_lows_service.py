@@ -1,11 +1,10 @@
 import pandas_ta as ta
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
-def calculate_hl(data: pd.DataFrame, date: str, period: int) -> float:
+def calculate_hl(data: pd.DataFrame, date: date, period: int) -> float:
 
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date].tail(period)
+    filtered_data = data.loc[data['date'] <= date].tail(period)
 
     high_count = 0
     low_count = 0

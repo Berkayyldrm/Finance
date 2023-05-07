@@ -1,16 +1,15 @@
 import pandas_ta as ta
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 
-def calculate_atr(data: pd.DataFrame, date: str, period: int) -> float:
+def calculate_atr(data: pd.DataFrame, date: date, period: int) -> float:
 
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date]
+    filtered_data = data.loc[data['date'] <= date]
 
     atr = ta.atr(high=filtered_data['high'], low=filtered_data['low'], close=filtered_data['close'], length=period)
     atr = atr.iloc[-1]
-    current_price = filtered_data.loc[filtered_data["date"] == end_date, "close"].values[0]
+    current_price = filtered_data.loc[filtered_data["date"] == date, "close"].values[0]
     percentage_atr = (atr / current_price) * 100
     
     return atr, percentage_atr

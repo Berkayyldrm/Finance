@@ -1,11 +1,10 @@
-from datetime import datetime
+from datetime import datetime, date
 import pandas as pd
 import pandas_ta as ta
 
-def calculate_stoch(data: pd.DataFrame, date: str, k: int, d: int, smooth_k: int) -> float:
+def calculate_stoch(data: pd.DataFrame, date: date, k: int, d: int, smooth_k: int) -> float:
 
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date]
+    filtered_data = data.loc[data['date'] <= date]
 
     stoch = ta.stoch(filtered_data["high"], filtered_data["low"], filtered_data["close"], k=k, d=d, smooth_k=smooth_k)
     stoch_k = stoch['STOCHk_{}_{}_{}'.format(k, d, smooth_k)].iloc[-1]
