@@ -32,8 +32,8 @@ async def get_technical_indicators(
     symbol: str,
     date: date,
     rsi_period: Optional[int] = 14,
-    stoch_k: Optional[int] = 9,
-    stoch_d: Optional[int] = 6,
+    stoch_k: Optional[int] = 14,
+    stoch_d: Optional[int] = 3,
     stoch_smooth_k: Optional[int] = 3,
     stochrsi_period: Optional[int] = 14,
     stochrsi_rsi_period: Optional[int] = 14,
@@ -62,8 +62,8 @@ async def get_technical_indicators(
 
     # Calculate all the indicator values
     rsi = calculate_rsi(data=data, date=date, period=rsi_period)
-    stoch_k, stoch_d, stoch_diff = calculate_stoch(data=data, date=date, k=stoch_k, d=stoch_d, smooth_k=stoch_smooth_k)
-    stochrsi_k, stochrsi_d = calculate_stochrsi(data=data, date=date, period=stochrsi_period, rsi_period=stochrsi_rsi_period, k=stochrsi_k, d=stochrsi_d)
+    stoch_k, stoch_d, stoch_prev_k, stoch_prev_d = calculate_stoch(data=data, date=date, k=stoch_k, d=stoch_d, smooth_k=stoch_smooth_k)
+    stochrsi_k, stochrsi_d, stochrsi_prev_k, stochrsi_prev_d = calculate_stochrsi(data=data, date=date, period=stochrsi_period, rsi_period=stochrsi_rsi_period, k=stochrsi_k, d=stochrsi_d)
     macd, macd_h, macd_s = calculate_macd(data=data, date=date, fast_period=macd_fast_period, slow_period=macd_slow_period, signal_period=macd_signal_period)
     adx, adx_dmp, adx_dmn = calculate_adx(data=data, date=date, period=adx_period)
     wr = calculate_williams_r(data=data, date=date, period=williams_r_period)
@@ -80,8 +80,8 @@ async def get_technical_indicators(
         adx_return = adx * -1
 
     rsi_sentiment = interpret_rsi(rsi)
-    stoch_sentiment = interpret_stoch(stoch_diff)
-    stochrsi_sentiment = interpret_stochrsi(stochrsi_k, stochrsi_d)
+    stoch_sentiment = interpret_stoch(stoch_k, stoch_d, stoch_prev_k, stoch_prev_d)
+    stochrsi_sentiment = interpret_stochrsi(stochrsi_k, stochrsi_d, stochrsi_prev_k, stochrsi_prev_d)
     macd_sentiment = interpret_macd(macd, macd_h, macd_s)
     adx_sentiment = interpret_adx(adx, adx_dmp, adx_dmn)
     wr_sentiment = interpret_williams_r(wr)
@@ -95,7 +95,7 @@ async def get_technical_indicators(
     results = {
         "technical_values":{
         "rsi": rsi,
-        "stoch": {"stoch_k": stoch_k, "stoch_d": stoch_d, "stoch_diff": stoch_diff},
+        "stoch": {"stoch_k": stoch_k, "stoch_d": stoch_d},
         "stochrsi": {"stochrsi_k": stochrsi_k, "stochrsi_d": stochrsi_d},
         "macd": {"macd": macd, "macdh": macd_h, "macds": macd_s},
         "adx":{"adx": adx, "adx_return": adx_return},

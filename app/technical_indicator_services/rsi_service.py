@@ -18,13 +18,13 @@ def calculate_rsi_all(data: pd.DataFrame, date: str, period: int) -> float:
     return rsi
 
 def interpret_rsi(rsi_value: float) -> str:
-    if rsi_value > 70:
+    if rsi_value >= 70:
         return "Güçlü Sat"
-    elif rsi_value > 60:
+    elif 57 <= rsi_value < 70:
         return "Sat"
-    elif rsi_value < 30:
-        return "Güçlü Al"
-    elif rsi_value < 40:
+    elif 43 <= rsi_value < 57:
+        return "Nötr"
+    elif 30 <= rsi_value < 43:
         return "Al"
     else:
-        return "Nötr"
+        return "Güçlü Al"
