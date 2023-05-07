@@ -1,11 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import pandas as pd
 import pandas_ta as ta
 
-def calculate_bull_bear_power(data: pd.DataFrame, date: str, period: int) -> float:
+def calculate_bull_bear_power(data: pd.DataFrame, date: date, period: int) -> float:
 
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date]
+    filtered_data = data.loc[data['date'] <= date]
     
     bull_power = filtered_data["high"] - ta.ema(filtered_data["close"], length=period)
     bear_power = filtered_data["low"] - ta.ema(filtered_data["close"], length=period)

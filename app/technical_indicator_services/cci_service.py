@@ -1,11 +1,10 @@
 import pandas as pd
 import pandas_ta as ta
-from datetime import datetime
+from datetime import datetime, date
 
-def calculate_cci(data: pd.DataFrame, date: str, period: int) -> float:
+def calculate_cci(data: pd.DataFrame, date: date, period: int) -> float:
 
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date]
+    filtered_data = data.loc[data['date'] <= date]
 
     cci = ta.cci(high=filtered_data['high'], low=filtered_data['low'], close=filtered_data['close'], length=period)
 
