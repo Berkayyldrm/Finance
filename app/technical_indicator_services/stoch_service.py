@@ -12,7 +12,6 @@ def calculate_stoch(data: pd.DataFrame, date: date, k: int, d: int, smooth_k: in
     stoch_d = stoch['STOCHd_{}_{}_{}'.format(k, d, smooth_k)].iloc[-1]
     stoch_prev_k = stoch['STOCHk_{}_{}_{}'.format(k, d, smooth_k)].iloc[-2]
     stoch_prev_d = stoch['STOCHd_{}_{}_{}'.format(k, d, smooth_k)].iloc[-2]
-    print(stoch_k, stoch_d, stoch_prev_k, stoch_prev_d)
 
     return stoch_k, stoch_d, stoch_prev_k, stoch_prev_d
 
