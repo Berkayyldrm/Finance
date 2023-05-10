@@ -34,11 +34,14 @@ def interpret_simple_moving_average(ma_value: float, current_price: float) -> st
     else:
         return "Güçlü Sat"
     
-def interpret_simple_moving_average_all(ma_value: pd.Series, current_price: pd.Series) -> str:
+def interpret_simple_moving_average_all(ma_value: pd.Series, current_price: pd.Series) -> float:
+    return current_price - ma_value
+
+"""def interpret_simple_moving_average_all(ma_value: pd.Series, current_price: pd.Series) -> str:
     return ma_value.combine(current_price, lambda ma, cp: (
         "Güçlü Al" if cp > ma * 1.05 else
         "Al" if cp > ma and cp <= ma * 1.05 else
         "Nötr" if cp >= ma * 0.95 and cp <= ma * 1.05 else
         "Sat" if cp < ma and cp >= ma * 0.95 else
         "Güçlü Sat"
-    ))
+    ))"""

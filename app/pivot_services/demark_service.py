@@ -71,8 +71,11 @@ def interpret_demark_pivot_points(current_price: float, support_levels: List[flo
         return "Zayıf Sat"
     else:
         return "Sat"
+
+def interpret_demark_pivot_points_all(current_price: pd.Series, support_levels: pd.Series, resistance_levels: pd.Series, pivot: pd.Series) -> float:
+    return current_price - pivot 
     
-def interpret_demark_pivot_points_all(current_price: pd.Series, support_levels: pd.Series, resistance_levels: pd.Series, pivot: pd.Series) -> pd.Series:
+"""def interpret_demark_pivot_points_all(current_price: pd.Series, support_levels: pd.Series, resistance_levels: pd.Series, pivot: pd.Series) -> pd.Series:
     input_df = pd.concat([current_price, support_levels, resistance_levels, pivot], axis=1)
     input_df.columns = ['current_price', 'support_levels', 'resistance_levels', 'pivot']
 
@@ -81,4 +84,4 @@ def interpret_demark_pivot_points_all(current_price: pd.Series, support_levels: 
         "Zayıf Al" if row['current_price'] > row['pivot'] and row['current_price'] < row['resistance_levels'][0] else
         "Zayıf Sat" if row['current_price'] < row['pivot'] and row['current_price'] > row['support_levels'][0] else
         "Sat"
-    ), axis=1)
+    ), axis=1)"""

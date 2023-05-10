@@ -74,7 +74,11 @@ def interpret_camarilla_pivot_points(current_price: float, support_levels: List[
     else:
         return "Güçlü Sat"
     
-def interpret_camarilla_pivot_points_all(current_price: pd.Series, support_levels: pd.Series, resistance_levels: pd.Series, pivot: pd.Series) -> pd.Series:
+
+def interpret_camarilla_pivot_points_all(current_price: pd.Series, support_levels: pd.Series, resistance_levels: pd.Series, pivot: pd.Series) -> float:
+    return current_price - pivot 
+
+"""def interpret_camarilla_pivot_points_all(current_price: pd.Series, support_levels: pd.Series, resistance_levels: pd.Series, pivot: pd.Series) -> pd.Series:
     input_df = pd.concat([current_price, support_levels, resistance_levels, pivot], axis=1)
     input_df.columns = ['current_price', 'support_levels', 'resistance_levels', 'pivot']
 
@@ -85,4 +89,4 @@ def interpret_camarilla_pivot_points_all(current_price: pd.Series, support_level
         "Zayıf Sat" if row['current_price'] < row['pivot'] and row['current_price'] > row['support_levels'][0] else
         "Sat" if row['current_price'] > row['support_levels'][1] and row['current_price'] <= row['support_levels'][0] else
         "Güçlü Sat"
-    ), axis=1)
+    ), axis=1)"""
