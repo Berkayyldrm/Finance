@@ -5,6 +5,8 @@ import asyncio
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.controllers import data_controller, machine_learning_controller, technical_indicator_controller, moving_average_controller, pivot_controller
+from app.services import daily_data_service, technical_data_service
+from app.services.avaliable_date_service import available_date_service
 logging.basicConfig(level=logging.DEBUG)
 
 app = FastAPI()
@@ -36,8 +38,13 @@ async def my_task():
         sleep_seconds = (target_time - now).total_seconds()
         await asyncio.sleep(sleep_seconds)
 
-        # Belirli saatte çalışacak kod burada olacak
-        print("Task executed:", datetime.now())
+        daily_data_service()
+        print("Daily Data Task Executed:", datetime.now())
+        available_date_service()
+        print("Avaliable Date Task Executed:", datetime.now())
+        technical_data_service()
+        print("Technical Data Task Executed:", datetime.now())
+
 
 @app.on_event("startup")
 async def startup_event():
