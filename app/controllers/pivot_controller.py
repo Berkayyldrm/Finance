@@ -1,21 +1,31 @@
+from datetime import date
 from typing import Optional
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from app.pivot_services.camarilla_service import calculate_camarilla_pivot_points, interpret_camarilla_pivot_points
 from app.pivot_services.classic_service import calculate_classic_pivot_points, interpret_classic_pivot_points
 from app.pivot_services.demark_service import calculate_demark_pivot_points, interpret_demark_pivot_points
 from app.pivot_services.fibonacci_service import calculate_fibonacci_pivot_points, interpret_fibonacci_pivot_points
 from app.pivot_services.woodie_service import calculate_woodie_pivot_points, interpret_woodie_pivot_points
-from app.services.dataframe_service import get_data_as_dataframe
+from app.services.dataframe_service import get_data_as_dataframe, get_technical_data_as_dataframe
 from fastapi.responses import JSONResponse
 
 router = APIRouter()
 
+available_dates = get_technical_data_as_dataframe(schema_name="general", table_name="availableDates")
+available_dates = available_dates["date"].tolist()
+
+def is_date_valid(input_date: date) -> bool:
+    return input_date in available_dates
+
 @router.get("/{symbol}/{date}/")
 async def get_pivots(
     symbol: str,
-    date: str,
+    date: date,
     period: Optional[int] = 1
     ):
+    if not is_date_valid(date):
+        raise HTTPException(status_code=400, detail="Invalid date. Please provide a date from the available list.")
+    
     data = get_data_as_dataframe(schema_name = "public", table_name=symbol)
 
     classic_support_levels, classic_resistance_levels, classic_pivot, current_price = calculate_classic_pivot_points(data=data, date=date, period=period)

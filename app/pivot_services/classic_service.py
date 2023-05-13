@@ -1,11 +1,11 @@
 
-from datetime import datetime
+from datetime import datetime, date
 import pandas as pd
 from typing import List
 
-def calculate_classic_pivot_points(data: pd.DataFrame, date: str, period: int) -> List[float]:
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date].tail(period)
+def calculate_classic_pivot_points(data: pd.DataFrame, date: date, period: int) -> List[float]:
+    
+    filtered_data = data.loc[data['date'] <= date].tail(period)
 
     high = filtered_data["high"].max()
     low = filtered_data["low"].min()
@@ -26,9 +26,9 @@ def calculate_classic_pivot_points(data: pd.DataFrame, date: str, period: int) -
     current_price = filtered_data.iloc[0]['close']
     return support_levels, resistance_levels, pivot, current_price
 
-def calculate_classic_pivot_points_all(data: pd.DataFrame, date: str, period: int) -> List[List[float]]:
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date]
+def calculate_classic_pivot_points_all(data: pd.DataFrame, date: date, period: int) -> List[List[float]]:
+    
+    filtered_data = data.loc[data['date'] <= date]
 
     cp = []
 

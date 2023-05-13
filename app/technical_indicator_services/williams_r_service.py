@@ -11,10 +11,9 @@ def calculate_williams_r(data: pd.DataFrame, date: date, period: int) -> float:
     return williams_r.iloc[-1]
 
 
-def calculate_williams_r_all(data: pd.DataFrame, date: str, period: int) -> float:
+def calculate_williams_r_all(data: pd.DataFrame, date: date, period: int) -> float:
 
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date]
+    filtered_data = data.loc[data['date'] <= date]
 
     williams_r = ta.willr(high=filtered_data['high'], low=filtered_data['low'], close=filtered_data['close'], length=period)
 

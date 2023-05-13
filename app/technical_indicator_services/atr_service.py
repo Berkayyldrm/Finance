@@ -15,14 +15,17 @@ def calculate_atr(data: pd.DataFrame, date: date, period: int) -> float:
     return atr, percentage_atr
 
 
-def calculate_atr_all(data: pd.DataFrame, date: str, period: int) -> float:
+def calculate_atr_all(data: pd.DataFrame, date: date, period: int):
 
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date]
+    filtered_data = data.loc[data['date'] <= date]
 
     atr = ta.atr(high=filtered_data['high'], low=filtered_data['low'], close=filtered_data['close'], length=period)
+
+    atr_df = pd.concat([atr, filtered_data["close"]], axis=1)
+    atr_df["percentage_atr"] = atr_df[f"ATRr_{period}"] / atr_df["close"] * 100
+    percentage_atr = atr_df["percentage_atr"]
     
-    return atr
+    return atr, percentage_atr
     
 
 def interpret_atr(percentage_atr: float) -> str:

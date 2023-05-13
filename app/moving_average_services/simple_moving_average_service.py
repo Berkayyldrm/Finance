@@ -1,20 +1,17 @@
-from datetime import datetime
+from datetime import datetime, date
 import pandas_ta as ta
 import pandas as pd
 
-def calculate_simple_moving_average(data: pd.DataFrame, date: str, period: int) -> float:
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date]
-
+def calculate_simple_moving_average(data: pd.DataFrame, date: date, period: int) -> float:
+    filtered_data = data.loc[data['date'] <= date]
     ma = ta.sma(filtered_data["close"], length=period)
 
-    current_price = data.loc[data['date'] == end_date, "close"].values
+    current_price = data.loc[data['date'] == date, "close"].values
 
     return ma.iloc[-1], current_price
 
-def calculate_simple_moving_average_all(data: pd.DataFrame, date: str, period: int) -> float:
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date]
+def calculate_simple_moving_average_all(data: pd.DataFrame, date: date, period: int) -> float:
+    filtered_data = data.loc[data['date'] <= date]
 
     ma = ta.sma(filtered_data["close"], length=period)
 

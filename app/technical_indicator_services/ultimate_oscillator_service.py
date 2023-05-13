@@ -10,10 +10,9 @@ def calculate_ultimate_oscillator(data: pd.DataFrame, date: date, short_period: 
 
     return uo.iloc[-1]
 
-def calculate_ultimate_oscillator_all(data: pd.DataFrame, date: str, short_period: int, medium_period: int, long_period: int) -> float:
+def calculate_ultimate_oscillator_all(data: pd.DataFrame, date: date, short_period: int, medium_period: int, long_period: int) -> float:
 
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data["date"] <= end_date]
+    filtered_data = data.loc[data['date'] <= date]
 
     uo = ta.uo(high=filtered_data['high'], low=filtered_data['low'], close=filtered_data['close'], fast=short_period, medium=medium_period, slow=long_period)
 
