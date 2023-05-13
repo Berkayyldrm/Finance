@@ -141,7 +141,7 @@ for stock_symbol in top_1_stock:
     adx_df = pd.DataFrame(adx)
     adx_dmp_df = pd.DataFrame(adx_dmp)
     adx_dmn_df = pd.DataFrame(adx_dmn)
-    adx_return_df = pd.DataFrame(adx_return, columns=["ADX_return"])
+    adx_return_df = pd.DataFrame(adx_return, columns=["ADX_Return"])
 
     wr_df = pd.DataFrame(wr)
 
@@ -149,18 +149,19 @@ for stock_symbol in top_1_stock:
 
     atr_df = pd.DataFrame(atr)
     percentage_atr_df = pd.DataFrame(percentage_atr)
+    percentage_atr_df.rename({"percentage_atr": "Percentage_ATR"}, axis=1, inplace=True)
 
-    hl_df = pd.DataFrame(hl_ratio, columns=[f"hl_ratio_{p['hl_period']}"])
-    hl_temp_df = hl_df[f"hl_ratio_{p['hl_period']}"].shift(p['hl_period']+1)
-    hl_temp2_df = hl_df[f"hl_ratio_{p['hl_period']}"].iloc[-p['hl_period']+1:]
+    hl_df = pd.DataFrame(hl_ratio, columns=[f"HL_Ratio_{p['hl_period']}"])
+    hl_temp_df = hl_df[f"HL_Ratio_{p['hl_period']}"].shift(p['hl_period']+1)
+    hl_temp2_df = hl_df[f"HL_Ratio_{p['hl_period']}"].iloc[-p['hl_period']+1:]
     hl_df = pd.concat([hl_temp_df, hl_temp2_df]).reset_index(drop=True)
 
     uo_df = pd.DataFrame(uo)
 
     roc_df = pd.DataFrame(roc)
 
-    bullpower_df = pd.DataFrame(bull_power, columns=[f"Bull_power_{p['bullbear_period']}"])
-    bearpower_df = pd.DataFrame(bear_power, columns=[f"Bear_power_{p['bullbear_period']}"])
+    bullpower_df = pd.DataFrame(bull_power, columns=[f"Bull_Power_{p['bullbear_period']}"])
+    bearpower_df = pd.DataFrame(bear_power, columns=[f"Bear_Power_{p['bullbear_period']}"])
 
     
 
