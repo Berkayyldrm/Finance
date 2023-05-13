@@ -1,11 +1,10 @@
-from datetime import datetime
+from datetime import datetime, date
 import pandas as pd
 from typing import List
 
-def calculate_woodie_pivot_points(data: pd.DataFrame, date: str, period: int) -> List[float]:
+def calculate_woodie_pivot_points(data: pd.DataFrame, date: date, period: int) -> List[float]:
     
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date].tail(period)
+    filtered_data = data.loc[data['date'] <= date].tail(period)
 
     high = filtered_data["high"].max()
     low = filtered_data["low"].min()
@@ -26,9 +25,9 @@ def calculate_woodie_pivot_points(data: pd.DataFrame, date: str, period: int) ->
     current_price = filtered_data.iloc[0]['close']
     return support_levels, resistance_levels, pivot, current_price
 
-def calculate_woodie_pivot_points_all(data: pd.DataFrame, date: str, period: int) -> List[List[float]]:
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date]
+def calculate_woodie_pivot_points_all(data: pd.DataFrame, date: date, period: int) -> List[List[float]]:
+    
+    filtered_data = data.loc[data['date'] <= date]
 
     woodie = []
 
@@ -70,7 +69,10 @@ def interpret_woodie_pivot_points(current_price: float, support_levels: List[flo
     else:
         return "Güçlü Sat"
 
-def interpret_woodie_pivot_points_all(current_price: pd.Series, support_levels: pd.Series, resistance_levels: pd.Series, pivot: pd.Series) -> pd.Series:
+def interpret_woodie_pivot_points_all(current_price: pd.Series, support_levels: pd.Series, resistance_levels: pd.Series, pivot: pd.Series) -> float:
+    return current_price - pivot 
+
+"""def interpret_woodie_pivot_points_all(current_price: pd.Series, support_levels: pd.Series, resistance_levels: pd.Series, pivot: pd.Series) -> pd.Series:
     input_df = pd.concat([current_price, support_levels, resistance_levels, pivot], axis=1)
     input_df.columns = ['current_price', 'support_levels', 'resistance_levels', 'pivot']
 
@@ -81,4 +83,4 @@ def interpret_woodie_pivot_points_all(current_price: pd.Series, support_levels: 
         "Zayıf Sat" if row['current_price'] < row['pivot'] and row['current_price'] > row['support_levels'][0] else
         "Sat" if row['current_price'] > row['support_levels'][1] and row['current_price'] <= row['support_levels'][0] else
         "Güçlü Sat"
-    ), axis=1)
+    ), axis=1)"""

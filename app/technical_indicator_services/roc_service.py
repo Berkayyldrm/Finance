@@ -10,10 +10,9 @@ def calculate_roc(data: pd.DataFrame, date: date, period: int) -> float:
 
     return roc.iloc[-1]
 
-def calculate_roc_all(data: pd.DataFrame, date: str, period: int) -> float:
+def calculate_roc_all(data: pd.DataFrame, date: date, period: int) -> float:
 
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date]
+    filtered_data = data.loc[data['date'] <= date]
 
     roc = ta.roc(filtered_data["close"], length=period)
     

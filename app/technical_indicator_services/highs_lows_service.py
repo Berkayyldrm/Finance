@@ -21,9 +21,8 @@ def calculate_hl(data: pd.DataFrame, date: date, period: int) -> float:
       
     return ratio
 
-def calculate_hl_all(data: pd.DataFrame, date: str, period: int) -> float:
-    end_date = datetime.strptime(date, "%Y-%m-%d").date()
-    filtered_data = data.loc[data['date'] <= end_date]
+def calculate_hl_all(data: pd.DataFrame, date: date, period: int) -> float:
+    filtered_data = data.loc[data['date'] <= date]
     
     hl_ratios = []
 
