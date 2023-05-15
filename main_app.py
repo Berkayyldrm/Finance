@@ -5,8 +5,9 @@ import asyncio
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.controllers import data_controller, machine_learning_controller, technical_indicator_controller, moving_average_controller, pivot_controller
-from app.services import daily_data_service, technical_data_service
 from app.services.avaliable_date_service import available_date_service
+from app.services.daily_data_service import daily_data_service
+from app.services.technical_data_service import technical_data_service
 logging.basicConfig(level=logging.DEBUG)
 
 app = FastAPI()
@@ -30,7 +31,7 @@ app.add_middleware(
 async def my_task():
     while True:
         now = datetime.now()
-        target_time = datetime(now.year, now.month, now.day, 23, 0)  # Her gün 23:00'de çalışacak
+        target_time = datetime(now.year, now.month, now.day, 23, 16)  # Her gün 23:00'de çalışacak
 
         if now > target_time:
             target_time += timedelta(days=1)  # Ertesi güne geçiş
