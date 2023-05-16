@@ -1,0 +1,14 @@
+# Dockerfile
+
+# PostgreSQL resmi imajını kullan
+FROM postgres:latest
+
+# Çalışma dizini olarak /docker-entrypoint-initdb.d/ seç
+WORKDIR /docker-entrypoint-initdb.d/
+
+# .tar dosyanı docker image içine kopyala
+COPY db_dump/db.tar /docker-entrypoint-initdb.d/
+
+# Veritabanını geri yükleme komutu (bu komutu startup script olarak ekliyoruz)
+RUN echo "pg_restore -U postgres -d postgres < db.tar" > /docker-entrypoint-initdb.d/restore.sh
+RUN chmod +x /docker-entrypoint-initdb.d/restore.sh
