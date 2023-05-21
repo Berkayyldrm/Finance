@@ -133,3 +133,4 @@ manuel/
 data/
 data_csv/
 postgres_heroku.sql
+db_data
