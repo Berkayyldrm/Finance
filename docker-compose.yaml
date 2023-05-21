@@ -19,7 +19,8 @@ services:
       interval: 30s
       timeout: 30s
       retries: 3
-  web:
+
+  web-backend:
     build:
       context: .
       dockerfile: Dockerfile_fastapi
@@ -27,6 +28,15 @@ services:
       - 8000:8000
     depends_on:
       - db
+
+  web-frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile_react
+    ports:
+      - 3000:3000
+    depends_on:
+      - web-backend
 
 volumes:
   db_data: 
