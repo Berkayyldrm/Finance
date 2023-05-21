@@ -1,0 +1,46 @@
+@import "../../node_modules/bootstrap/scss/functions";
+@import "../../node_modules/bootstrap/scss/variables";
+@import "../../node_modules/bootstrap/scss/mixins";
+
+$theme-colors: (
+  "primary": #242423,
+  "secondary": #3D3B37,
+  "third": #EFF2F4,
+  "fourth": #D1D1D1,
+  "fifth": #730707,
+  "sixth": green,
+  "seventh": rgb(216, 4, 4),
+  "eighth": #fff,
+  "ninth":#FFC107,
+  "tenth":blue
+);
+$font-sizes: (
+  1: 40px,
+  2: 32px,
+  3: 28px,
+  4: 24px,
+  5: 20px,
+  6: 18px,
+  7: 16px,
+  8: 14px,
+  9: 12px,
+);
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 3px;
+  background-color: #3D3B37;
+  border: 1px solid #242423;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background-color: #85847f;
+}
+.cursor {
+  cursor: pointer;
+}
+
+@import '../../node_modules/bootstrap/scss/bootstrap.scss';
