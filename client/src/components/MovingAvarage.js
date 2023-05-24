@@ -6,8 +6,8 @@ function MovingAvarage({companyName}) {
     const [expoData, setExpoData] = useState(null);
     const [movingAverage,setMovingAvarage] = useState(5);
     const  fetchData = async () => {
-        const simpleDataRequest = axios.get(`http://localhost:8000/moving-average/simple/${companyName}/2023-01-03/${movingAverage}`)
-        const expoDataRequest = axios.get(`http://localhost:8000/moving-average/expo/${companyName}/2023-01-03/${movingAverage}`)
+        const simpleDataRequest = axios.get(`http://0.0.0.0:8000/moving-average/simple/${companyName}/2023-01-03/${movingAverage}`)
+        const expoDataRequest = axios.get(`http://0.0.0.0:8000/moving-average/expo/${companyName}/2023-01-03/${movingAverage}`)
         const response = await Promise.all([simpleDataRequest,expoDataRequest]);
         setSimpleData(response[0].data);
         setExpoData(response[1].data);

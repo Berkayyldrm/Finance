@@ -31,14 +31,14 @@ app.add_middleware(
 async def my_task():
     while True:
         now = datetime.now()
-        target_time = datetime(now.year, now.month, now.day, 23, 16)  # Her gün 23:00'de çalışacak
+        target_time = datetime(now.year, now.month, now.day, 23, 00)  # Her gün 23:00'de çalışacak
 
         if now > target_time:
             target_time += timedelta(days=1)  # Ertesi güne geçiş
 
         sleep_seconds = (target_time - now).total_seconds()
         await asyncio.sleep(sleep_seconds)
-
+        print("Daily Data Tasks Starting:", datetime.now())
         daily_data_service()
         print("Daily Data Task Executed:", datetime.now())
         available_date_service()
