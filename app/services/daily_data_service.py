@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from sqlalchemy import create_engine
 import yfinance as yf
 import configparser
@@ -5,9 +6,13 @@ import pandas as pd
 import psycopg2
 import sys
 import sys
-sys.path.insert(0, "c:/Users/Berkay/Desktop/Finance")
+import logging
+logging.getLogger('urllib3').setLevel(logging.WARNING)
+logging.getLogger('yfinance').setLevel(logging.WARNING)
+#sys.path.insert(0, "c:/Users/Berkay/Desktop/Finance")
 
 def daily_data_service():
+    today = datetime.today().date()
     config = configparser.ConfigParser()
     config.read("config.ini")
 
@@ -39,7 +44,7 @@ def daily_data_service():
 
     for index, stock_symbol in enumerate(top_50_stock, start=1):
         stock = get_stock_data(stock_symbol)
-        hist = stock.history(start="2021-01-04", end="2023-05-13")
+        hist = stock.history(start="2021-01-04", end=today + timedelta(days=1))
         hist = hist.reset_index()
         hist = hist.sort_values(by='Date', ascending=False).reset_index(drop=True)
 
@@ -53,6 +58,6 @@ def daily_data_service():
         hist.columns = ["date", "open", "high", "low", "close", "volume", "dividens", "stock splits", "diff"]
         hist.to_sql(stock_symbol, engine, schema="public", if_exists='replace', index=False)
 
-        progress_percentage = (index / total_stocks) * 100
-        sys.stdout.write("\rProgress: %.2f%%" % progress_percentage)
-        sys.stdout.flush()
+        #progress_percentage = (index / total_stocks) * 100
+        #sys.stdout.write("\rProgress: %.2f%%" % progress_percentage)
+        #sys.stdout.flush()
