@@ -5,7 +5,7 @@ import PivotCard from './PivotCard';
 function Pivot() {
     const [pivotData, setPivotData] = useState(null);
     useEffect(()=>{
-        axios.get("http://localhost:8000/pivot/AEFES/2023-01-03/?period=1")
+        axios.get("http://0.0.0.0:8000/pivot/AEFES/2023-01-03/?period=1")
         .then(res => setPivotData(res.data));
     },[])
     console.log(pivotData);

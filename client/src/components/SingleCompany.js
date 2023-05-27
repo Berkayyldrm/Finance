@@ -8,7 +8,7 @@ function SingleCompany() {
   const { name } = useParams();
   const [data,setData] = useState(null)
   const fetchData = async () => {
-    const technicalIndicatorData = axios.get(`http://localhost:8000/technical-indicator/${name}/2023-01-20/?rsi_period=14&stoch_k=14&stoch_d=3&stoch_smooth_k=3&stochrsi_period=14&stochrsi_rsi_period=14&stochrsi_k=3&stochrsi_d=3&macd_fast_period=12&macd_slow_period=26&macd_signal_period=9&adx_period=14&williams_r_period=14&cci_period=14&atr_period=14&hl_period=14&uo_short_period=7&uo_medium_period=14&uo_long_period=28&roc_period=14&bull_bear_power_period=13`);
+    const technicalIndicatorData = axios.get(`http://0.0.0.0:8000/technical-indicator/${name}/2023-01-20/?rsi_period=14&stoch_k=14&stoch_d=3&stoch_smooth_k=3&stochrsi_period=14&stochrsi_rsi_period=14&stochrsi_k=3&stochrsi_d=3&macd_fast_period=12&macd_slow_period=26&macd_signal_period=9&adx_period=14&williams_r_period=14&cci_period=14&atr_period=14&hl_period=14&uo_short_period=7&uo_medium_period=14&uo_long_period=28&roc_period=14&bull_bear_power_period=13`);
     const response = await Promise.all([technicalIndicatorData]);
     setData(response[0].data);
   };

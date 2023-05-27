@@ -6,7 +6,7 @@ export const FinanceProvider = ({ children }) => {
     const [selectCompany,setSelectCompany] = useState("");
     const [data,setData] = useState([]);
     useEffect(()=>{
-      axios.get("http://localhost:8000/data/get_table_names")
+      axios.get("http://0.0.0.0:8000/data/get_table_names")
       .then(res => setData(res.data.table_names))
     },[])
     const values = {
