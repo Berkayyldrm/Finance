@@ -3,9 +3,6 @@
 # PostgreSQL resmi imajını kullan
 FROM postgres:latest
 
-RUN adduser --disabled-password --gecos '' jenkins
-USER jenkins
-
 # Çalışma dizini olarak /docker-entrypoint-initdb.d/ seç
 WORKDIR /docker-entrypoint-initdb.d/
 
