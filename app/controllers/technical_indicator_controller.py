@@ -23,7 +23,7 @@ router = APIRouter()
 
 available_dates = get_technical_data_as_dataframe(schema_name="general", table_name="availableDates")
 available_dates = available_dates["date"].tolist()
-
+print(available_dates)
 def is_date_valid(input_date: date) -> bool:
     return input_date in available_dates
 
