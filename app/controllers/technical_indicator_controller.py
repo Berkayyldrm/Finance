@@ -21,12 +21,6 @@ import numpy as np
 
 router = APIRouter()
 
-available_dates = get_technical_data_as_dataframe(schema_name="general", table_name="availableDates")
-available_dates = available_dates["date"].tolist()
-print(available_dates)
-def is_date_valid(input_date: date) -> bool:
-    return input_date in available_dates
-
 @router.get("/{symbol}/{date}/")
 async def get_technical_indicators(
     symbol: str,
@@ -53,6 +47,12 @@ async def get_technical_indicators(
     roc_period: Optional[int] = 14,
     bull_bear_power_period: Optional[int] = 13
     ):
+
+    available_dates = get_technical_data_as_dataframe(schema_name="general", table_name="availableDates")
+    available_dates = available_dates["date"].tolist()
+
+    def is_date_valid(input_date: date) -> bool:
+        return input_date in available_dates
 
     if not is_date_valid(date):
         raise HTTPException(status_code=400, detail="Invalid date. Please provide a date from the available list.")
