@@ -7,14 +7,15 @@ from fastapi.responses import JSONResponse
 
 router = APIRouter()
 
-available_dates = get_technical_data_as_dataframe(schema_name="general", table_name="availableDates")
-available_dates = available_dates["date"].tolist()
-
-def is_date_valid(input_date: date) -> bool:
-    return input_date in available_dates
-
 @router.get("/simple/{symbol}/{date}/{period}")
 async def calculate_simple_moving_average_value(symbol: str, date: date, period: int):
+
+    available_dates = get_technical_data_as_dataframe(schema_name="general", table_name="availableDates")
+    available_dates = available_dates["date"].tolist()
+
+    def is_date_valid(input_date: date) -> bool:
+        return input_date in available_dates
+
     if not is_date_valid(date):
         raise HTTPException(status_code=400, detail="Invalid date. Please provide a date from the available list.")
     
